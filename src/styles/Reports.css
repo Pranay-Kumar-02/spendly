@@ -1,0 +1,223 @@
+.reports-page {
+    min-height: 100vh;
+    background: var(--background);
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.summary-card {
+    border-radius: 16px;
+    padding: 16px 12px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.summary-card p {
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 6px;
+}
+
+.summary-card h3 {
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.summary-card.income {
+    background: #D1FAE5;
+    color: #065F46;
+}
+
+.summary-card.expense {
+    background: #FEE2E2;
+    color: #991B1B;
+}
+
+.summary-card.savings {
+    background: #EDE9FE;
+    color: #5B21B6;
+}
+
+body.dark-mode .summary-card.income {
+    background: #064E3B;
+    color: #6EE7B7;
+}
+
+body.dark-mode .summary-card.expense {
+    background: #7F1D1D;
+    color: #FCA5A5;
+}
+
+body.dark-mode .summary-card.savings {
+    background: #3B0764;
+    color: #C4B5FD;
+}
+
+/* ===== DOWNLOAD BUTTONS ===== */
+.download-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.download-btn {
+    flex: 1;
+    padding: 14px;
+    border: none;
+    border-radius: 14px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.download-btn.pdf {
+    background: var(--gradient);
+    color: white;
+    box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+}
+
+.download-btn.excel {
+    background: linear-gradient(135deg, #10B981, #059669);
+    color: white;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.download-btn:hover {
+    transform: translateY(-2px);
+}
+
+.download-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ===== REPORT TABS ===== */
+.report-tabs {
+    display: flex;
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 4px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+    gap: 2px;
+}
+
+.report-tabs button {
+    flex: 1;
+    padding: 10px 6px;
+    border: none;
+    background: transparent;
+    border-radius: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.report-tabs button.active {
+    background: var(--gradient);
+    color: white;
+    font-weight: 600;
+}
+
+/* ===== HEALTH SCORE ===== */
+.health-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.health-score-circle {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    border: 4px solid;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.health-score-number {
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.health-score-total {
+    font-size: 11px;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.health-progress {
+    height: 10px;
+    background: var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+.health-progress-fill {
+    height: 100%;
+    border-radius: 10px;
+}
+
+.health-grade {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.health-reasons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.health-reason.good {
+    font-size: 13px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    background: #D1FAE5;
+    color: #065F46;
+    font-weight: 500;
+}
+
+body.dark-mode .health-reason.good {
+    background: #064E3B;
+    color: #6EE7B7;
+}
+
+.health-tips {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.health-tip {
+    font-size: 13px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    background: #FEF3C7;
+    color: #92400E;
+    font-weight: 500;
+}
+
+body.dark-mode .health-tip {
+    background: #451A03;
+    color: #FCD34D;
+}

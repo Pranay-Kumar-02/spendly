@@ -1,0 +1,131 @@
+.more-page {
+    min-height: 100vh;
+    background: var(--background);
+}
+
+.user-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.user-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--gradient);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.user-info h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-transform: capitalize;
+}
+
+.user-info p {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.section-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    padding-left: 4px;
+}
+
+/* The card wrapper already has border-radius — just clip it */
+.more-items-card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    margin-bottom: 16px;
+    overflow: hidden;
+}
+
+.more-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    padding: 16px 20px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.2s ease;
+    text-align: left;
+}
+
+.more-item:last-child {
+    border-bottom: none;
+}
+
+.more-item:hover {
+    background: var(--background);
+}
+
+body.dark-mode .more-item:hover {
+    background: #273549;
+}
+
+.more-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.more-label {
+    flex: 1;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-primary);
+    text-align: left;
+}
+
+.more-arrow {
+    font-size: 20px;
+    color: var(--text-secondary);
+}
+
+.logout-btn {
+    width: 100%;
+    padding: 16px;
+    background: #FEE2E2;
+    color: #EF4444;
+    border: none;
+    border-radius: 16px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+    background: #FCA5A5;
+    transform: translateY(-2px);
+}
+
+body.dark-mode .logout-btn {
+    background: #7F1D1D;
+    color: #FCA5A5;
+}

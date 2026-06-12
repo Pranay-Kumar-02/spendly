@@ -32,7 +32,22 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
+  }
+}
+
+/* 🚀 SPENDLY GLOBAL LAYOUT FIXES */
+body {
+  /* This prevents your content from hiding behind the mobile bottom nav */
+  padding-bottom: 95px !important;
+  margin: 0;
+}
+
+@media (min-width: 1025px) {
+  body {
+    /* Removes the padding on Desktop because the nav moves to the left sidebar */
+    padding-bottom: 0 !important;
   }
 }

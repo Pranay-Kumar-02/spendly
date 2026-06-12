@@ -1,0 +1,303 @@
+.expenses-page {
+    min-height: 100vh;
+    background: var(--background);
+}
+
+.expenses-total {
+    text-align: center;
+    background: var(--gradient);
+    color: white;
+    border-radius: 24px;
+    margin-bottom: 16px;
+    padding: 24px;
+}
+
+.expenses-total p:first-child {
+    font-size: 14px;
+    opacity: 0.85;
+    margin-bottom: 8px;
+}
+
+.expenses-total h2 {
+    font-size: 36px;
+    font-weight: 800;
+    margin-bottom: 4px;
+}
+
+.expenses-total p:last-child {
+    font-size: 13px;
+    opacity: 0.75;
+}
+
+/* ===== SEARCH BAR ===== */
+.search-bar {
+    display: flex;
+    align-items: center;
+    background: var(--card-bg);
+    border-radius: 14px;
+    padding: 12px 16px;
+    gap: 10px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+    border: 2px solid var(--border);
+    transition: border-color 0.3s ease;
+}
+
+.search-bar:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+}
+
+.search-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.search-input {
+    flex: 1;
+    border: none !important;
+    background: transparent !important;
+    font-size: 15px;
+    color: var(--text-primary);
+    outline: none !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    width: auto;
+}
+
+.search-input:focus {
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.clear-search {
+    background: var(--border);
+    border: none;
+    border-radius: 50%;
+    width: 26px;
+    height: 26px;
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+
+.clear-search:hover {
+    background: var(--danger);
+    color: white;
+}
+
+/* ===== FILTER SORT ROW ===== */
+.filter-sort-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+    align-items: center;
+}
+
+.filter-toggle-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 11px 16px;
+    border-radius: 12px;
+    border: 2px solid var(--border);
+    background: var(--card-bg);
+    color: var(--text-secondary);
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.filter-toggle-btn.active {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: #EDE9FE;
+}
+
+.filter-badge {
+    color: var(--primary);
+    font-size: 14px;
+    line-height: 1;
+}
+
+.sort-select {
+    flex: 1;
+    padding: 11px 14px;
+    border-radius: 12px;
+    border: 2px solid var(--border);
+    background: var(--card-bg);
+    color: var(--text-primary);
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sort-select:focus {
+    border-color: var(--primary);
+    outline: none;
+}
+
+/* ===== ADVANCED FILTERS ===== */
+.advanced-filters {
+    margin-bottom: 12px;
+    overflow: hidden;
+}
+
+/* ===== CATEGORY FILTER SCROLL ===== */
+.filter-scroll {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+    scrollbar-width: none;
+}
+
+.filter-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.filter-btn {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 2px solid var(--border);
+    background: var(--card-bg);
+    color: var(--text-secondary);
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.filter-btn.active {
+    background: var(--gradient);
+    color: white;
+    border-color: transparent;
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+}
+
+/* ===== ADD EXPENSE BUTTON ===== */
+.add-expense-btn {
+    margin-bottom: 16px;
+}
+
+/* ===== EXPENSE FORM ===== */
+.expense-form {
+    margin-bottom: 16px;
+    overflow: hidden;
+}
+
+.expense-form h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+}
+
+/* ===== EXPENSE ITEMS ===== */
+.expenses-list {
+    margin-top: 8px;
+}
+
+.expense-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    margin-bottom: 10px;
+    border-radius: 16px;
+    transition: all 0.2s ease;
+}
+
+.expense-item:hover {
+    transform: translateX(4px);
+    box-shadow: 0 6px 20px rgba(124, 58, 237, 0.15);
+}
+
+.expense-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: var(--background);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+}
+
+body.dark-mode .expense-icon {
+    background: #273549;
+}
+
+.expense-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.expense-name {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.expense-category {
+    font-size: 12px;
+    color: var(--primary);
+    font-weight: 500;
+    margin-top: 2px;
+}
+
+.expense-date {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+}
+
+.expense-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.expense-amount {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--danger);
+}
+
+.delete-btn {
+    background: #FEE2E2;
+    border: none;
+    border-radius: 8px;
+    padding: 4px 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.delete-btn:hover {
+    background: #FCA5A5;
+    transform: scale(1.1);
+}
+
+body.dark-mode .delete-btn {
+    background: #7F1D1D;
+}

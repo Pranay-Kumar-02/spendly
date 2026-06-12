@@ -1,0 +1,371 @@
+.home-page {
+    min-height: 100vh;
+    background: var(--background);
+}
+
+.greeting-section {
+    margin-bottom: 20px;
+}
+
+.greeting-text {
+    font-size: 14px;
+    color: var(--text-secondary);
+    font-weight: 400;
+}
+
+.greeting-name {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-transform: capitalize;
+}
+
+.balance-card {
+    border-radius: 24px;
+    padding: 24px;
+    margin-bottom: 16px;
+    color: white;
+    box-shadow: var(--shadow-lg);
+}
+
+.balance-label {
+    font-size: 14px;
+    opacity: 0.85;
+    margin-bottom: 8px;
+}
+
+.balance-amount {
+    font-size: 36px;
+    font-weight: 800;
+    margin-bottom: 20px;
+    letter-spacing: -1px;
+}
+
+.balance-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.balance-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+}
+
+.balance-item span {
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+.balance-item strong {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.balance-divider {
+    width: 1px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.card-header h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.card-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+}
+
+.badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.badge.success {
+    background: #D1FAE5;
+    color: #065F46;
+}
+
+.badge.danger {
+    background: #FEE2E2;
+    color: #991B1B;
+}
+
+.progress-bar {
+    height: 10px;
+    background: var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--gradient);
+    border-radius: 10px;
+}
+
+.progress-fill.danger {
+    background: linear-gradient(135deg, #EF4444, #F97316);
+}
+
+.budget-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.legend {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--text-primary);
+}
+
+.legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.legend-item strong {
+    margin-left: auto;
+    font-weight: 600;
+}
+
+.transaction-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.transaction-item:last-child {
+    border-bottom: none;
+}
+
+.transaction-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    background: var(--background);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.transaction-details {
+    flex: 1;
+}
+
+.transaction-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.transaction-date {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+}
+
+.transaction-amount {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.transaction-amount.danger {
+    color: var(--danger);
+}
+
+.transaction-amount.success {
+    color: var(--success);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 30px 0;
+    color: var(--text-secondary);
+}
+
+.empty-state p:first-child {
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+
+.empty-state p:last-child {
+    font-size: 14px;
+}
+
+.quick-actions {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.quick-action-btn {
+    flex: 1;
+    padding: 14px;
+    border: none;
+    border-radius: 14px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.income-btn {
+    background: #D1FAE5;
+    color: #065F46;
+}
+
+.income-btn:hover {
+    background: #A7F3D0;
+    transform: translateY(-2px);
+}
+
+.budget-btn {
+    background: #EDE9FE;
+    color: #5B21B6;
+}
+
+.budget-btn:hover {
+    background: #DDD6FE;
+    transform: translateY(-2px);
+}
+
+.quick-form-card {
+    overflow: hidden;
+}
+
+/* ===== FINANCIAL HEALTH SCORE ===== */
+.health-score-card {
+    overflow: hidden;
+}
+
+.health-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.health-score-circle {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    border: 4px solid;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.health-score-number {
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.health-score-total {
+    font-size: 11px;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.health-progress {
+    height: 10px;
+    background: var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+.health-progress-fill {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 1.5s ease;
+}
+
+.health-grade {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.health-reasons {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.health-reason {
+    font-size: 13px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+.health-reason.good {
+    background: #D1FAE5;
+    color: #065F46;
+}
+
+body.dark-mode .health-reason.good {
+    background: #064E3B;
+    color: #6EE7B7;
+}
+
+.health-tips {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.health-tip {
+    font-size: 13px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    background: #FEF3C7;
+    color: #92400E;
+    font-weight: 500;
+}
+
+body.dark-mode .health-tip {
+    background: #451A03;
+    color: #FCD34D;
+}
