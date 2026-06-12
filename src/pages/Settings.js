@@ -919,7 +919,11 @@ const Settings = () => {
                                     { label: "Application", value: "Spendly" },
                                     { label: "Version", value: "v1.0.0", badge: true },
                                     { label: "Developer", value: "Pranay Kumar Vonamala" },
-                                    { label: "GitHub", value: "github.com/pranay-kumar 🔗", link: "https://github.com" },
+                                    {
+                                        label: "GitHub",
+                                        value: "github.com/Pranay-Kumar-02/spendly",
+                                        link: "https://github.com/Pranay-Kumar-02/spendly"
+                                    },
                                     { label: "Contact", value: "vonamala.pranay@gmail.com", link: "mailto:vonamala.pranay@gmail.com" },
                                     { label: "Phone", value: "+91 6301905015", link: "tel:+916301905015" },
                                 ].map(function (item, i) {
