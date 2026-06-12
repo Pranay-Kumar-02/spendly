@@ -6,6 +6,7 @@ import { useApp } from "../context/AppContext";
 import Navbar from "../components/Navbar";
 
 const OPENROUTER_API_KEY = process.env.REACT_APP_OPENROUTER_API_KEY;
+const API_URL = "https://openrouter.ai/api/v1/chat/completions";
 
 const FormattedMessage = ({ content }) => {
     const lines = content.split("\n");
