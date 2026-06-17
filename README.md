@@ -1,70 +1,95 @@
-# Getting Started with Create React App
+<h1 align="center">💸 Spendly</h1>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<p align="center">
+  <em>A modern, AI-enhanced personal finance architecture built for speed and visual clarity.</em>
+</p>
 
-## Available Scripts
+<p align="center">
+  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
+  <img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" alt="Firebase" />
+  <img src="https://img.shields.io/badge/Framer_Motion-black?style=for-the-badge&logo=framer" alt="Framer Motion" />
+  <img src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Vercel" />
+</p>
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## 🎯 Overview
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Spendly eliminates the high friction of traditional expense tracking. It is a full-stack, mobile-first web application that allows users to log transactions instantaneously, visualize spending habits through interactive charts, and receive real-time financial advice powered by Artificial Intelligence.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+![Spendly Preview](https://via.placeholder.com/1000x500.png?text=Drop+a+beautiful+screenshot+of+your+Dashboard+here!)
 
-### `npm test`
+---
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## ✨ Core Features
 
-### `npm run build`
+* ⚡ **Frictionless "Quick Add":** A globally accessible, viewport-locked modal allowing users to log income and expenses instantly from anywhere in the app without page reloads.
+* 🧠 **AI Financial Advisor:** Integrated AI APIs analyze the user's spending arrays to output actionable, natural-language wealth management insights in real time.
+* 🌍 **Global Localization Engine:** A custom-built i18n matrix instantly translates the entire UI into 14 languages (including Hindi, Telugu, Tamil, French, and Spanish) with zero network latency.
+* 🎨 **Algorithmic Theming:** A modular CSS-variable engine featuring 20+ dynamic modes, including solid colors and complex 3D glassmorphism "Particle" themes.
+* 📊 **Interactive Analytics:** Responsive, SVG-based declarative charting powered by Recharts for visual budget breakdowns.
+* 📱 **Hardware-Accelerated UX:** Utilizing Framer Motion for 60fps micro-interactions, layout transitions, and flawless mobile-to-desktop morphing.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 🛠️ Technical Stack
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+* **Frontend:** React.js, React Router DOM v6
+* **Backend & Database:** Firebase Firestore (Real-time NoSQL sync)
+* **Animation Engine:** Framer Motion
+* **Data Visualization:** Recharts
+* **Styling:** Custom CSS3 (Flexbox, CSS Variables, Glassmorphism)
+* **Deployment & CI/CD:** Vercel
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## 🚀 Getting Started
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+To run Spendly locally on your machine, follow these steps:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### 1. Clone the repository
+\`\`\`bash
+git clone https://github.com/yourusername/spendly.git
+cd spendly
+\`\`\`
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### 2. Install dependencies
+\`\`\`bash
+npm install
+\`\`\`
 
-## Learn More
+### 3. Environment Variables
+Create a \`.env\` file in the root directory and add your Firebase and AI API credentials:
+\`\`\`env
+REACT_APP_FIREBASE_API_KEY=your_firebase_api_key
+REACT_APP_FIREBASE_AUTH_DOMAIN=your_auth_domain
+REACT_APP_FIREBASE_PROJECT_ID=your_project_id
+REACT_APP_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+REACT_APP_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+REACT_APP_FIREBASE_APP_ID=your_app_id
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+REACT_APP_AI_API_KEY=your_ai_integration_key
+\`\`\`
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 4. Start the Development Server
+\`\`\`bash
+npm start
+\`\`\`
+The application will launch at \`http://localhost:3000\`.
 
-### Code Splitting
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## 👨‍💻 About the Developer
 
-### Analyzing the Bundle Size
+**Pranay Kumar**  
+*Full-Stack Developer | Vellore Institute of Technology (VIT)*
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+Passionate about bridging the gap between rigorous backend data architecture and flawless, user-centric frontend design.
 
-### Making a Progressive Web App
+* 💼 **LinkedIn:** [https://www.linkedin.com/in/pranay-kumar-vonamala/]
+* 🐙 **GitHub:** [@pranay-kumar-02](https://github.com/Pranay-Kumar-02)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+---
+<div align="center">
+  <i>If you found this project interesting, please consider giving it a ⭐</i>
+</div>
