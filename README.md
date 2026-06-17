@@ -1,187 +1,371 @@
-<div align="center">
-  
-# 💸 Spendly: Intelligent Wealth & Expense Architecture
+# 🚀 Spendly — AI-Powered Personal Finance Tracker
 
-**An enterprise-grade, AI-driven personal finance dashboard built for global scalability and frictionless user experience.**
+> Smart Personal Finance Management powered by Artificial Intelligence, Financial Analytics, and Modern Web Technologies.
 
-[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](#)
-[![Firebase](https://img.shields.io/badge/firebase-ffca28?style=for-the-badge&logo=firebase&logoColor=black)](#)
-[![Framer Motion](https://img.shields.io/badge/Framer_Motion-black?style=for-the-badge&logo=framer)](#)
-[![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-black?style=for-the-badge&logo=vercel)](#)
-
-</div>
+🌐 **Live Demo:** https://spendly-eosin.vercel.app
 
 ---
 
-## 💡 System Overview
+# 📖 Overview
 
-Traditional expense trackers suffer from high friction and passive data storage. **Spendly** transforms static logging into proactive wealth management. It is a full-stack, mobile-first web application that allows users to log transactions instantaneously, visualize spending habits through interactive charts, project long-term investments, and receive real-time financial advice powered by Artificial Intelligence. 
+Spendly is a modern personal finance management platform designed to help users track expenses, manage budgets, analyze spending habits, and make smarter financial decisions.
 
-Engineered with a focus on hardware-accelerated UI rendering and secure, real-time data synchronization, Spendly serves as a comprehensive showcase of modern frontend architecture and API integration.
+Unlike traditional expense trackers, Spendly combines financial management with Artificial Intelligence to deliver personalized insights, intelligent recommendations, and a user-friendly experience.
 
----
-
-## 💎 Core Architecture & Feature Modules
-
-### 🤖 1. Asynchronous AI Insights Engine & API Integration
-Spendly implements an intelligent financial advisory layer that converts raw transaction arrays into real-time wealth management logic.
-* **The Mechanism:** The application dynamically serializes transactional data collections from Firebase (tracking parameters like spending velocity, category allocations, and localized caps). It strips away user metadata to safeguard information and dispatches optimized context payloads to external AI endpoints.
-* **The Value:** Turns reactive tracking into proactive execution. The AI automatically parses anomalies, detects subscription leaks, evaluates cash flow health, and outputs personalized financial steps in natural language.
-* **Engineering Flex:** Payload dispatches are strictly throttled and batched asynchronously via background operations to prevent UI thread locking, ensuring the frontend remains highly responsive during deep analytical generation.
-
-### 📈 2. Systematic Investment Plan (SIP) & Wealth Growth Tracker
-A forward-looking dashboard requires asset tracking, not just liability logging. 
-* **The Mechanism:** Users configure recurring investment profiles by inputting principal amounts, expected annual return rates, and time horizons. The engine processes these variables through compound interest algorithms to project future portfolio values.
-* **Engineering Flex:** Mathematical amortization and compounding logic are decoupled into isolated utility functions, preventing complex financial projections from blocking the main JavaScript thread even when calculating 30-year daily compound arrays.
-
-### 🏦 3. Liability Pipeline (Loan & EMI Management)
-True net-worth tracking requires structured debt management.
-* **The Mechanism:** Users register active loans by defining the core principal, interest rate, and target clearance dates. The module dynamically calculates EMI (Equated Monthly Installment) targets and tracks repayment progress.
-* **The Value:** By visualizing exactly how much of an EMI is fighting interest versus clearing the principal, users are empowered to structure faster debt-clearance strategies.
-
-### 🎯 4. Dynamic Budget Allocation & Active Alert Triggers
-Traditional budgets fail because they are passive. Spendly implements an active, scanning budget engine that protects the financial baseline in real-time.
-* **The Mechanism:** A continuous live engine scanner monitors the distributed NoSQL transaction logs against user-defined monthly caps.
-* **Engineering Flex:** The alert scanner utilizes React's `useEffect` dependencies, re-arming and re-calculating percentages instantly only when relevant data nodes mutate. It bypasses heavy DOM manipulation by rendering high-priority alerts through conditional `AnimatePresence` portals when spending crosses 80%.
-
-### 📥 5. Enterprise Data Portability (PDF & Excel Reporting)
-Spendly provides comprehensive local reporting infrastructure, letting users take absolute ownership of their transactional ledgers.
-* **Excel (.xlsx) Structuring:** Ingests localized transactional objects from the state layer and dynamically compiles them into structured data sheets mapped by Dates, Categories, Descriptions, and Numeric Amounts.
-* **High-Fidelity PDF Generation:** Converts the user’s real-time financial dashboards and statement matrices into printable document sheets, respecting current theme styles for a pristine physical record.
-
-### 🌍 6. Zero-Latency Context-Driven i18n Matrix (14 Languages)
-To establish deep global utility without adding bloated third-party globalization packages that slow down script loading times.
-* **The Mechanism:** Built completely on top of the native React Context API, a centralized translation matrix handles all strings. 
-* **The Value:** Users can natively operate Spendly in 14 distinct global languages—including English, Hindi (हिंदी), Telugu (తెలుగు), Tamil (தமிழ்), French, and Spanish—modifying every input placeholder, button label, and modal warning on the fly.
-* **Engineering Flex:** By caching all translation dictionaries directly in the browser's execution context, the entire UI switches language layers with 0ms network latency and absolute zero layout shift.
-
-### 🎨 7. Scoped CSS Variable Theme Architecture (20+ Dynamic Modes)
-Spendly completely decouples UI presentational rendering from business components via a centralized style token inheritance structure.
-* **The Mechanism:** The theme state engine applies specific custom class selectors to the global DOM body hook, instantly overriding hundreds of inheritance properties in a unified CSS custom property variables sheet.
-* **Engineering Flex:** Ambient glass configurations (such as Cosmos, Ocean, Matrix, and Aurora) leverage highly optimized `-webkit-backdrop-filter` rendering boundaries and separate `z-index` containment. This compels mobile browsers to route processing straight to hardware GPU accelerators, guaranteeing 60fps scrolling performance.
-
-### ⚡ 8. Frictionless "Quick Add" Viewport-Locked Ledger
-Data collection relies entirely on reducing user input fatigue.
-* **The Mechanism:** Implements an application-wide, viewport-locked interactive overlay that completely overrides the viewport stack. It mounts and unmounts flawlessly using conditional lifecycle logic to prevent memory leaking.
-* **The Value:** Users can immediately record income streams or cash expense leaks with a single tap from any page without waiting for route reloads or losing context of their previous view.
-
-### 🔄 9. Real-Time Distributed NoSQL Sync & Secure Authentication
-* **The Mechanism:** Built using a secure Firebase Firestore structure, the application utilizes direct data subscriptions (`onSnapshot`) to map real-time changes straight into the React data lifecycle hook. 
-* **The Value:** Modifying an expense or logging income updates all dependent visual modules (Recharts vectors, financial summaries, alert triggers) instantly across all authenticated devices.
+The platform is designed for students, working professionals, families, and anyone looking to gain better control over their finances.
 
 ---
 
-## 🛠️ Technical Stack
+# ✨ Core Features
 
-| Domain | Technology | Purpose |
-| :--- | :--- | :--- |
-| **Frontend Framework** | `React.js` | Component-based UI rendering and virtual DOM optimization |
-| **State Management** | `Context API` | Global prop drilling avoidance for Themes, Auth, and Language states |
-| **Backend & Auth** | `Firebase Firestore` | Real-time NoSQL database and secure user authentication |
-| **Animation Engine** | `Framer Motion` | Complex, layout-aware micro-interactions and mounting transitions |
-| **Data Visualization** | `Recharts` | Responsive, SVG-based declarative charting |
-| **Routing** | `React Router v6` | Client-side routing with active state tracking |
-| **Deployment** | `Vercel` | CI/CD pipeline and edge-network hosting |
+## 💰 Expense Tracking
 
----
+Effortlessly track daily income and expenses.
 
-## 📂 Engineering Structure
+### Features
 
-The repository follows a strict separation of concerns, ensuring UI components are completely decoupled from business logic and database queries.
-
-
-spendly/
-├── src/
-│   ├── components/       # Dumb/Presentational components (Navbar, Modals)
-│   ├── context/          # Smart State Providers (AppContext.js)
-│   ├── firebase/         # SDK initialization and secure config isolation
-│   ├── styles/           # Modular CSS with scoped global variables
-│   ├── pages/            # View controllers (Dashboard, Reports)
-│   └── App.js            # Main React mounting node and routing wrapper
-└── .env                  # Secure environment variable storage (Git Ignored)
-
-## 🛠️ Technical Stack
-
-* **Frontend:** React.js, React Router DOM v6
-* **Backend & Database:** Firebase Firestore (Real-time NoSQL sync)
-* **Animation Engine:** Framer Motion
-* **Data Visualization:** Recharts
-* **Styling:** Custom CSS3 (Flexbox, CSS Variables, Glassmorphism)
-* **Deployment & CI/CD:** Vercel
+* Add and manage transactions
+* Income & expense tracking
+* Category-based organization
+* Transaction history
+* Real-time balance updates
+* Spending monitoring
 
 ---
 
-## 🚀 Getting Started
+## 🎯 Budget Management
 
-To run Spendly locally on your machine, follow these steps:
+Create budgets and stay financially disciplined.
 
-### 1. Clone the repository
-\`\`\`bash
-git clone https://github.com/Pranay-Kumar-02/spendly.git
-cd spendly
-\`\`\`
+### Features
 
-### 2. Install dependencies
-\`\`\`bash
-npm install
-\`\`\`
-
-### 3. Environment Variables
-Create a \`.env\` file in the root directory and add your Firebase and AI API credentials:
-\`\`\`env
-REACT_APP_FIREBASE_API_KEY=your_firebase_api_key
-REACT_APP_FIREBASE_AUTH_DOMAIN=your_auth_domain
-REACT_APP_FIREBASE_PROJECT_ID=your_project_id
-REACT_APP_FIREBASE_STORAGE_BUCKET=your_storage_bucket
-REACT_APP_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-REACT_APP_FIREBASE_APP_ID=your_app_id
-
-REACT_APP_AI_API_KEY=your_ai_integration_key
-\`\`\`
-
-### 4. Start the Development Server
-\`\`\`bash
-npm start
-\`\`\`
-The application will launch at \`http://localhost:3000\`.
+* Monthly budget planning
+* Spending limit tracking
+* Budget utilization monitoring
+* Overspending alerts
+* Category-wise budget allocation
+* Budget performance insights
 
 ---
 
----
+## 📊 Financial Analytics Dashboard
 
-## 👨‍💻 About the Developer
+Visualize your financial health through interactive analytics.
 
-<table align="center">
-  <tr>
-    <td>
-      <h3><b>Vonamala Pranay Kumar</b></h3>
-      <p><b>Computer Science & Engineering (CSE) Student</b> | <i>Vellore Institute of Technology (VIT)</i></p>
-      
-      <p>
-        I am an aspiring software engineer specializing in the intersection of <b>Full-Stack Architecture</b>, <b>Artificial Intelligence / Machine Learning</b>, and <b>Cyber & Information Security</b>. My engineering philosophy focuses on building secure, robust distributed systems that incorporate modern AI primitives to solve real-world problems.
-      </p>
+### Features
 
-      <h4><b>🎯 Core Competencies & Focus Areas:</b></h4>
-      <ul>
-        <li><b>AI/ML Integration:</b> Building cognitive layers into web architectures by integrating and optimizing external AI APIs and transformer models to deliver real-time data insights.</li>
-        <li><b>Cyber & Information Security:</b> Implementing strict data isolation rules, runtime state protections, and secure environment practices to safeguard user data across modern cloud architectures.</li>
-        <li><b>Next-Gen Development:</b> Leveraging cutting-edge AI orchestration tools and frameworks to accelerate project development cycles, optimize code quality, and architect highly performant systems.</li>
-      </ul>
+* Income vs Expense analysis
+* Category-wise spending breakdown
+* Monthly financial trends
+* Interactive charts
+* Financial summaries
+* Real-time analytics
 
-      <p align="left">
-        <a href="https://linkedin.com/in/yourprofile"><img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"/></a>
-        <a href="https://github.com/yourusername"><img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white" alt="GitHub"/></a>
-      </p>
-    </td>
-  </tr>
-</table>
+### Built With
+
+* Recharts
+* Dynamic Data Visualization
 
 ---
 
-* 💼 **LinkedIn:** [Pranay Kumar Vonamala](https://www.linkedin.com/in/pranay-kumar-vonamala/)
-* 🐙 **GitHub:** [@Pranay-Kumar-02](https://github.com/Pranay-Kumar-02)
+## 🤖 AI Financial Advisor
+
+Spendly includes an AI-powered assistant that helps users make informed financial decisions.
+
+### AI Capabilities
+
+* Personalized financial guidance
+* Budgeting recommendations
+* Saving suggestions
+* Spending analysis
+* Financial planning assistance
+* Smart money management advice
+
+### AI Integration
+
+* OpenRouter API
+* Large Language Models (LLMs)
+* Context-aware conversations
 
 ---
-<div align="center">
-  <i>If you found this project interesting or want to collaborate on AI/Security applications, feel free to connect or drop a ⭐!</i>
-</div>
+
+## 🧠 AI Memory System
+
+Spendly's AI assistant remembers previous context to provide more meaningful and personalized interactions.
+
+### Benefits
+
+* Context-aware responses
+* Personalized recommendations
+* Better user experience
+* Smarter financial assistance
+* Continuous financial guidance
+
+---
+
+## 💡 Smart Financial Insights
+
+Automatically generated insights based on user financial activity.
+
+### Examples
+
+* Spending pattern detection
+* Budget risk warnings
+* Saving opportunities
+* Financial health observations
+* Expense optimization suggestions
+
+---
+
+# 🧮 Financial Calculators
+
+Spendly includes multiple built-in financial calculators.
+
+## 📈 SIP Calculator
+
+Calculate future returns on investments.
+
+### Features
+
+* Wealth projection
+* Monthly investment planning
+* Return estimation
+* Investment growth visualization
+
+---
+
+## 🏦 EMI Calculator
+
+Plan loans efficiently.
+
+### Features
+
+* Monthly EMI calculation
+* Total repayment estimation
+* Interest analysis
+* Loan affordability planning
+
+---
+
+## 🧾 GST Calculator
+
+Quick and accurate GST calculations.
+
+### Features
+
+* GST inclusion calculations
+* GST exclusion calculations
+* Tax breakdown analysis
+* Business-friendly utility
+
+---
+
+## 💳 Credit Card Management
+
+Manage credit card spending effectively.
+
+### Features
+
+* Credit utilization tracking
+* Expense monitoring
+* Spending analysis
+* Financial awareness
+
+---
+
+# 🎯 Goal Tracking
+
+Set and achieve your financial goals.
+
+### Examples
+
+* Emergency Fund
+* Travel Savings
+* Gadget Purchases
+* Investment Targets
+* Personal Savings Goals
+
+### Features
+
+* Progress tracking
+* Goal monitoring
+* Achievement visualization
+* Savings recommendations
+
+---
+
+# 🚨 Bill Management
+
+Never miss an important payment.
+
+### Features
+
+* Upcoming bill tracking
+* Due-date reminders
+* Payment monitoring
+* Better financial planning
+
+---
+
+# ⚡ Quick Add Transactions
+
+Designed for speed and convenience.
+
+### Features
+
+* Fast expense entry
+* One-click transaction addition
+* Improved user productivity
+* Simplified financial tracking
+
+---
+
+# 🌍 Multi-Language Support
+
+Spendly supports multiple languages to improve accessibility and usability.
+
+### Benefits
+
+* Better user experience
+* Regional accessibility
+* Inclusive design
+* Wider user reach
+
+---
+
+# 🎨 Themes & Personalization
+
+Customize the application according to personal preferences.
+
+### Features
+
+* Light Theme
+* Dark Theme
+* Personalized experience
+* User-friendly interface
+
+---
+
+# 📱 Responsive Design
+
+Optimized for multiple devices.
+
+### Supported Platforms
+
+* Desktop
+* Laptop
+* Tablet
+* Mobile
+
+---
+
+# 🔒 Security & Reliability
+
+Built using modern development practices.
+
+### Features
+
+* Secure Firebase integration
+* Cloud database support
+* Reliable data management
+* Protected user experience
+
+---
+
+# ⚙️ Technology Stack
+
+## Frontend
+
+* React
+* JavaScript
+* HTML5
+* CSS3
+
+## Animations
+
+* Framer Motion
+
+## Data Visualization
+
+* Recharts
+
+## Backend & Database
+
+* Firebase
+* Firestore
+
+## Artificial Intelligence
+
+* OpenRouter API
+* Large Language Models (LLMs)
+
+## Deployment
+
+* Vercel
+
+## Version Control
+
+* Git
+* GitHub
+
+---
+
+# 🌟 What Makes Spendly Different?
+
+Most finance applications focus only on recording transactions.
+
+Spendly goes beyond simple expense tracking and acts as an intelligent financial companion.
+
+### Traditional Finance Apps
+
+* ❌ Manual tracking only
+* ❌ No intelligent recommendations
+* ❌ Generic user experience
+* ❌ Limited personalization
+* ❌ No financial reasoning
+
+### Spendly
+
+* ✅ AI-powered financial assistance
+* ✅ Personalized financial insights
+* ✅ Context-aware AI conversations
+* ✅ Built-in financial calculators
+* ✅ Goal-oriented financial planning
+* ✅ Multi-language support
+* ✅ Modern UI & UX
+* ✅ Interactive analytics dashboard
+* ✅ Intelligent money management experience
+
+---
+
+# 🚀 Future Roadmap
+
+Planned enhancements include:
+
+* AI Agents for Finance Management
+* Smart Expense Categorization
+* Financial Forecasting
+* Investment Portfolio Tracking
+* Voice Assistant Integration
+* Predictive Financial Analytics
+* Advanced Budget Planner
+
+---
+
+# 👨‍💻 Developer
+
+### Pranay Kumar Vonamala
+
+**B.Tech Computer Science & Engineering (Information Security)**
+
+Passionate about Software Development, Artificial Intelligence, Agentic AI, Information Security, and Modern Web Development.
+
+### Connect With Me
+
+* GitHub: https://github.com/Pranay-Kumar-02
+* LinkedIn: https://www.linkedin.com/in/pranay-kumar-vonamala/
+* Email: [vonamala.pranay@gmail.com](mailto:vonamala.pranay@gmail.com)
+
+---
+
+⭐ If you found this project interesting, consider giving it a star.
