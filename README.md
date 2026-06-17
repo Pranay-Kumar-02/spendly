@@ -89,7 +89,7 @@ Data collection relies entirely on reducing user input fatigue.
 
 The repository follows a strict separation of concerns, ensuring UI components are completely decoupled from business logic and database queries.
 
-```text
+
 spendly/
 ├── src/
 │   ├── components/       # Dumb/Presentational components (Navbar, Modals)
