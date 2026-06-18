@@ -68,19 +68,6 @@ Visualize your financial health through interactive analytics.
 
 ---
 
-## 🤖 AI Financial Advisor
-
-Spendly includes an AI-powered assistant that helps users make informed financial decisions.
-
-### AI Capabilities
-
-* Personalized financial guidance
-* Budgeting recommendations
-* Saving suggestions
-* Spending analysis
-* Financial planning assistance
-* Smart money management advice
-
 ### AI Integration
 
 * OpenRouter API
@@ -89,254 +76,6 @@ Spendly includes an AI-powered assistant that helps users make informed financia
 
 ---
 
-## 🧠 AI Memory System
-
-Spendly's AI assistant remembers previous context to provide more meaningful and personalized interactions.
-
-### Benefits
-
-* Context-aware responses
-* Personalized recommendations
-* Better user experience
-* Smarter financial assistance
-* Continuous financial guidance
-
----
-
-## 💡 Smart Financial Insights
-
-Automatically generated insights based on user financial activity.
-
-### Examples
-
-* Spending pattern detection
-* Budget risk warnings
-* Saving opportunities
-* Financial health observations
-* Expense optimization suggestions
-
----
-
-# 🧮 Financial Calculators
-
-Spendly includes multiple built-in financial calculators.
-
-## 📈 SIP Calculator
-
-Calculate future returns on investments.
-
-### Features
-
-* Wealth projection
-* Monthly investment planning
-* Return estimation
-* Investment growth visualization
-
----
-
-## 🏦 EMI Calculator
-
-Plan loans efficiently.
-
-### Features
-
-* Monthly EMI calculation
-* Total repayment estimation
-* Interest analysis
-* Loan affordability planning
-
----
-
-## 🧾 GST Calculator
-
-Quick and accurate GST calculations.
-
-### Features
-
-* GST inclusion calculations
-* GST exclusion calculations
-* Tax breakdown analysis
-* Business-friendly utility
-
----
-
-## 💳 Credit Card Management
-
-Manage credit card spending effectively.
-
-### Features
-
-* Credit utilization tracking
-* Expense monitoring
-* Spending analysis
-* Financial awareness
-
----
-
-# 🎯 Goal Tracking
-
-Set and achieve your financial goals.
-
-### Examples
-
-* Emergency Fund
-* Travel Savings
-* Gadget Purchases
-* Investment Targets
-* Personal Savings Goals
-
-### Features
-
-* Progress tracking
-* Goal monitoring
-* Achievement visualization
-* Savings recommendations
-
----
-
-# 🚨 Bill Management
-
-Never miss an important payment.
-
-### Features
-
-* Upcoming bill tracking
-* Due-date reminders
-* Payment monitoring
-* Better financial planning
-
----
-
-# ⚡ Quick Add Transactions
-
-Designed for speed and convenience.
-
-### Features
-
-* Fast expense entry
-* One-click transaction addition
-* Improved user productivity
-* Simplified financial tracking
-
----
-
-# 🌍 Multi-Language Support
-
-Spendly supports multiple languages to improve accessibility and usability.
-
-### Benefits
-
-* Better user experience
-* Regional accessibility
-* Inclusive design
-* Wider user reach
-
----
-
-# 🎨 Themes & Personalization
-
-Customize the application according to personal preferences.
-
-### Features
-
-* Light Theme
-* Dark Theme
-* Personalized experience
-* User-friendly interface
-
----
-
-# 📱 Responsive Design
-
-Optimized for multiple devices.
-
-### Supported Platforms
-
-* Desktop
-* Laptop
-* Tablet
-* Mobile
-
----
-
-# 🔒 Security & Reliability
-
-Built using modern development practices.
-
-### Features
-
-* Secure Firebase integration
-* Cloud database support
-* Reliable data management
-* Protected user experience
-
----
-
-# ⚙️ Technology Stack
-
-## Frontend
-
-* React
-* JavaScript
-* HTML5
-* CSS3
-
-## Animations
-
-* Framer Motion
-
-## Data Visualization
-
-* Recharts
-
-## Backend & Database
-
-* Firebase
-* Firestore
-
-## Artificial Intelligence
-
-* OpenRouter API
-* Large Language Models (LLMs)
-
-## Deployment
-
-* Vercel
-
-## Version Control
-
-* Git
-* GitHub
-
----
-
-# 🌟 What Makes Spendly Different?
-
-Most finance applications focus only on recording transactions.
-
-Spendly goes beyond simple expense tracking and acts as an intelligent financial companion.
-
-### Traditional Finance Apps
-
-* ❌ Manual tracking only
-* ❌ No intelligent recommendations
-* ❌ Generic user experience
-* ❌ Limited personalization
-* ❌ No financial reasoning
-
-### Spendly
-
-* ✅ AI-powered financial assistance
-* ✅ Personalized financial insights
-* ✅ Context-aware AI conversations
-* ✅ Built-in financial calculators
-* ✅ Goal-oriented financial planning
-* ✅ Multi-language support
-* ✅ Modern UI & UX
-* ✅ Interactive analytics dashboard
-* ✅ Intelligent money management experience
-
----
 # 📸 Application Showcase
 
 A visual walkthrough of Spendly's core features, user experience, and AI-powered financial management capabilities.
@@ -383,6 +122,19 @@ Features:
 - Financial Planning Assistance
 
 ![AI Advisor](screenshots/ai_advisor.jpeg)
+
+---
+## 🧠 AI Memory System
+
+Spendly's AI assistant remembers previous context to provide more meaningful and personalized interactions.
+
+### Benefits
+
+* Context-aware responses
+* Personalized recommendations
+* Better user experience
+* Smarter financial assistance
+* Continuous financial guidance
 
 ---
 
@@ -481,6 +233,20 @@ Features:
 
 ---
 
+## 📱 Fully Responsive Design
+
+Built to provide a seamless experience across all devices.
+
+Supported Devices:
+- Desktop
+- Laptop
+- Tablet
+- Mobile
+
+![Responsive Design](screenshots/responsive.jpeg)
+
+---
+
 ## ✨ Additional Features
 
 Spendly includes several additional tools designed to improve financial management and usability.
@@ -494,19 +260,159 @@ Features:
 
 ![Additional Features](screenshots/more_features.jpeg)
 
+# 🧮 Financial Calculators
+
+Spendly includes multiple built-in financial calculators.
+
+## 📈 SIP Calculator
+
+Calculate future returns on investments.
+
+### Features
+
+* Wealth projection
+* Monthly investment planning
+* Return estimation
+* Investment growth visualization
+
 ---
 
-## 📱 Fully Responsive Design
+## 🏦 EMI Calculator
 
-Built to provide a seamless experience across all devices.
+Plan loans efficiently.
 
-Supported Devices:
-- Desktop
-- Laptop
-- Tablet
-- Mobile
+### Features
 
-![Responsive Design](screenshots/responsive.jpeg)
+* Monthly EMI calculation
+* Total repayment estimation
+* Interest analysis
+* Loan affordability planning
+
+---
+
+## 🧾 GST Calculator
+
+Quick and accurate GST calculations.
+
+### Features
+
+* GST inclusion calculations
+* GST exclusion calculations
+* Tax breakdown analysis
+* Business-friendly utility
+
+---
+
+## 💳 Credit Card Management
+
+Manage credit card spending effectively.
+
+### Features
+
+* Credit utilization tracking
+* Expense monitoring
+* Spending analysis
+* Financial awareness
+
+---
+
+# 🎯 Goal Tracking
+
+Set and achieve your financial goals.
+
+### Examples
+
+* Emergency Fund
+* Travel Savings
+* Gadget Purchases
+* Investment Targets
+* Personal Savings Goals
+
+### Features
+
+* Progress tracking
+* Goal monitoring
+* Achievement visualization
+* Savings recommendations
+
+---
+
+# 🚨 Bill Management
+
+Never miss an important payment.
+
+### Features
+
+* Upcoming bill tracking
+* Due-date reminders
+* Payment monitoring
+* Better financial planning
+
+---
+
+# ⚙️ Technology Stack
+
+## Frontend
+
+* React
+* JavaScript
+* HTML5
+* CSS3
+
+## Animations
+
+* Framer Motion
+
+## Data Visualization
+
+* Recharts
+
+## Backend & Database
+
+* Firebase
+* Firestore
+
+## Artificial Intelligence
+
+* OpenRouter API
+* Large Language Models (LLMs)
+
+## Deployment
+
+* Vercel
+
+## Version Control
+
+* Git
+* GitHub
+
+---
+
+# 🌟 What Makes Spendly Different?
+
+Most finance applications focus only on recording transactions.
+
+Spendly goes beyond simple expense tracking and acts as an intelligent financial companion.
+
+### Traditional Finance Apps
+
+* ❌ Manual tracking only
+* ❌ No intelligent recommendations
+* ❌ Generic user experience
+* ❌ Limited personalization
+* ❌ No financial reasoning
+
+### Spendly
+
+* ✅ AI-powered financial assistance
+* ✅ Personalized financial insights
+* ✅ Context-aware AI conversations
+* ✅ Built-in financial calculators
+* ✅ Goal-oriented financial planning
+* ✅ Multi-language support
+* ✅ Modern UI & UX
+* ✅ Interactive analytics dashboard
+* ✅ Intelligent money management experience
 
 ---
 
