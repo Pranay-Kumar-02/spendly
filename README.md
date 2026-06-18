@@ -337,6 +337,178 @@ Spendly goes beyond simple expense tracking and acts as an intelligent financial
 * ✅ Intelligent money management experience
 
 ---
+# 📸 Application Showcase
+
+A visual walkthrough of Spendly's core features, user experience, and AI-powered financial management capabilities.
+
+---
+
+## 🔐 Secure Authentication
+
+Simple and secure user authentication powered by Firebase Authentication.
+
+Features:
+- User Registration
+- Secure Login
+- Protected User Data
+- Personalized User Experience
+
+![Authentication](screenshots/authentication.jpeg)
+
+---
+
+## 🏠 Dashboard Overview
+
+A centralized dashboard providing a complete overview of financial activity, spending, budgets, goals, and insights.
+
+Features:
+- Financial Summary
+- Account Overview
+- Quick Navigation
+- Real-Time Updates
+
+![Dashboard](screenshots/dashboard.jpeg)
+
+---
+
+## 🤖 AI Financial Advisor
+
+An AI-powered financial assistant designed to help users make smarter financial decisions.
+
+Features:
+- Personalized Financial Guidance
+- Spending Recommendations
+- Budget Optimization
+- Savings Suggestions
+- Financial Planning Assistance
+
+![AI Advisor](screenshots/ai_advisor.jpeg)
+
+---
+
+## 💬 Intelligent AI Conversations
+
+Interact naturally with Spendly's AI assistant through a modern conversational interface.
+
+Features:
+- Context-Aware Responses
+- Financial Queries & Advice
+- Smart Recommendations
+- Personalized Assistance
+
+![AI Chatbot](screenshots/ai_chatbot.jpeg)
+
+### AI Conversation Example
+
+![AI Conversation](screenshots/chat_ai_advisor.jpeg)
+
+---
+
+## 📊 Analytics & Financial Reports
+
+Gain deeper insights into spending habits through visual reports and analytics.
+
+Features:
+- Expense Breakdown
+- Spending Trends
+- Category Analysis
+- Financial Reports
+- Interactive Visualizations
+
+![Reports](screenshots/reports.jpeg)
+
+---
+
+## ⚡ Quick Add Transactions
+
+Designed for speed and convenience, allowing users to record transactions instantly.
+
+Features:
+- Fast Expense Entry
+- Quick Income Logging
+- Simplified Workflow
+- Improved Productivity
+
+![Quick Add](screenshots/quick_add.jpeg)
+
+---
+
+## 🌍 Multi-Language Support
+
+Spendly supports multiple languages, making financial management more accessible and inclusive.
+
+Features:
+- Enhanced Accessibility
+- Localized Experience
+- User-Friendly Interface
+- Broader Reach
+
+![Languages](screenshots/languages.jpeg)
+
+---
+
+## 🎨 Themes & Personalization
+
+Customize the application according to individual preferences.
+
+Features:
+- Light Theme
+- Dark Theme
+- Personalized Experience
+- Modern UI Design
+
+### Theme Selection
+
+![Themes](screenshots/themes.jpeg)
+
+### Dashboard Theme Preview
+
+![Theme Dashboard](screenshots/themes_dashboard.jpeg)
+
+---
+
+## ⚙️ Settings & Customization
+
+Manage application preferences and personalize the overall experience.
+
+Features:
+- Profile Management
+- Theme Selection
+- Language Preferences
+- User Customization
+
+![Settings](screenshots/settings.jpeg)
+
+---
+
+## ✨ Additional Features
+
+Spendly includes several additional tools designed to improve financial management and usability.
+
+Features:
+- Goal Tracking
+- Bill Reminders
+- Credit Card Tracking
+- Financial Calculators
+- Smart Financial Insights
+
+![Additional Features](screenshots/more_features.jpeg)
+
+---
+
+## 📱 Fully Responsive Design
+
+Built to provide a seamless experience across all devices.
+
+Supported Devices:
+- Desktop
+- Laptop
+- Tablet
+- Mobile
+
+![Responsive Design](screenshots/responsive.jpeg)
+
+---
 
 # 🚀 Future Roadmap
 
