@@ -15,6 +15,33 @@ Unlike traditional expense trackers, Spendly combines financial management with 
 The platform is designed for students, working professionals, families, and anyone looking to gain better control over their finances.
 
 ---
+# 🌟 What Makes Spendly Different?
+
+Most finance applications focus only on recording transactions.
+
+Spendly goes beyond simple expense tracking and acts as an intelligent financial companion.
+
+### Traditional Finance Apps
+
+* ❌ Manual tracking only
+* ❌ No intelligent recommendations
+* ❌ Generic user experience
+* ❌ Limited personalization
+* ❌ No financial reasoning
+
+### Spendly
+
+* ✅ AI-powered financial assistance
+* ✅ Personalized financial insights
+* ✅ Context-aware AI conversations
+* ✅ Built-in financial calculators
+* ✅ Goal-oriented financial planning
+* ✅ Multi-language support
+* ✅ Modern UI & UX
+* ✅ Interactive analytics dashboard
+* ✅ Intelligent money management experience
+
+---
 
 # ✨ Core Features
 
@@ -385,34 +412,6 @@ Never miss an important payment.
 
 * Git
 * GitHub
-
----
-
-# 🌟 What Makes Spendly Different?
-
-Most finance applications focus only on recording transactions.
-
-Spendly goes beyond simple expense tracking and acts as an intelligent financial companion.
-
-### Traditional Finance Apps
-
-* ❌ Manual tracking only
-* ❌ No intelligent recommendations
-* ❌ Generic user experience
-* ❌ Limited personalization
-* ❌ No financial reasoning
-
-### Spendly
-
-* ✅ AI-powered financial assistance
-* ✅ Personalized financial insights
-* ✅ Context-aware AI conversations
-* ✅ Built-in financial calculators
-* ✅ Goal-oriented financial planning
-* ✅ Multi-language support
-* ✅ Modern UI & UX
-* ✅ Interactive analytics dashboard
-* ✅ Intelligent money management experience
 
 ---
 
