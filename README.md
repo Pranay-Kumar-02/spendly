@@ -15,6 +15,7 @@ Unlike traditional expense trackers, Spendly combines financial management with 
 The platform is designed for students, working professionals, families, and anyone looking to gain better control over their finances.
 
 ---
+
 # 🌟 What Makes Spendly Different?
 
 Most finance applications focus only on recording transactions.
