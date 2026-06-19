@@ -45,69 +45,7 @@ Spendly goes beyond simple expense tracking and acts as an intelligent financial
 
 # ✨ Core Features
 
-## 💰 Expense Tracking
-
-Effortlessly track daily income and expenses.
-
-### Features
-
-* Add and manage transactions
-* Income & expense tracking
-* Category-based organization
-* Transaction history
-* Real-time balance updates
-* Spending monitoring
-
----
-
-## 🎯 Budget Management
-
-Create budgets and stay financially disciplined.
-
-### Features
-
-* Monthly budget planning
-* Spending limit tracking
-* Budget utilization monitoring
-* Overspending alerts
-* Category-wise budget allocation
-* Budget performance insights
-
----
-
-## 📊 Financial Analytics Dashboard
-
-Visualize your financial health through interactive analytics.
-
-### Features
-
-* Income vs Expense analysis
-* Category-wise spending breakdown
-* Monthly financial trends
-* Interactive charts
-* Financial summaries
-* Real-time analytics
-
-### Built With
-
-* Recharts
-* Dynamic Data Visualization
-
----
-
-### AI Integration
-
-* OpenRouter API
-* Large Language Models (LLMs)
-* Context-aware conversations
-
----
-
-# 📸 Application Showcase
-
 A visual walkthrough of Spendly's core features, user experience, and AI-powered financial management capabilities.
-
----
 
 ## 🔐 Secure Authentication
 
@@ -186,6 +124,7 @@ Features:
 ## 📊 Analytics & Financial Reports
 
 Gain deeper insights into spending habits through visual reports and analytics.
+Visualize your financial health through interactive analytics.
 
 Features:
 - Expense Breakdown
@@ -193,6 +132,12 @@ Features:
 - Category Analysis
 - Financial Reports
 - Interactive Visualizations
+- Category-wise spending breakdown
+
+### Built With
+
+* Recharts
+* Dynamic Data Visualization
 
 ![Reports](screenshots/reports.jpeg)
 
@@ -286,6 +231,46 @@ Features:
 - Smart Financial Insights
 
 ![Additional Features](screenshots/more_features.jpeg)
+
+---
+
+## 💰 Expense Tracking
+
+Effortlessly track daily income and expenses.
+
+### Features
+
+* Add and manage transactions
+* Income & expense tracking
+* Category-based organization
+* Transaction history
+* Real-time balance updates
+* Spending monitoring
+
+---
+
+## 🎯 Budget Management
+
+Create budgets and stay financially disciplined.
+
+### Features
+
+* Monthly budget planning
+* Spending limit tracking
+* Budget utilization monitoring
+* Overspending alerts
+* Category-wise budget allocation
+* Budget performance insights
+
+---
+
+### AI Integration
+
+* OpenRouter API
+* Large Language Models (LLMs)
+* Context-aware conversations
+
+---
 
 # 🧮 Financial Calculators
 
