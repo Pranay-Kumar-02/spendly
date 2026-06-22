@@ -3,7 +3,6 @@
 Smart Personal Finance Management powered by Artificial Intelligence, Financial Analytics, and Modern Web Technologies.
 
 🌐 **Live Demo:** https://spendly-eosin.vercel.app
-qwertyui
 
 ---
 
