@@ -5,7 +5,6 @@ Smart Personal Finance Management powered by Artificial Intelligence, Financial 
 🌐 **Live Demo:** https://spendly-eosin.vercel.app
 
 ---
-qwertyuiop
 
 # 📖 Overview
 
