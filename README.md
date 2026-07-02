@@ -6,7 +6,7 @@ Smart Personal Finance Management powered by Artificial Intelligence, Financial 
 
 ---
 qwertyuiop
-qwertyui
+
 # 📖 Overview
 
 Spendly is a modern personal finance management platform designed to help users track expenses, manage budgets, analyze spending habits, and make smarter financial decisions.
