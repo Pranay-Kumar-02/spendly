@@ -1,4 +1,4 @@
-# 🚀 Spendly — AI-Powered Personal Finance Trackerx
+# 🚀 Spendly — AI-Powered Personal Finance Tracker
 
 Smart Personal Finance Management powered by Artificial Intelligence, Financial Analytics, and Modern Web Technologies.
 
