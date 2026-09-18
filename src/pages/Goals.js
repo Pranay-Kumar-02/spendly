@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabase/supabase";
 import { useApp } from "../context/AppContext";
 import Navbar from "../components/Navbar";
 
 const Goals = () => {
-    const { user, darkMode } = useApp();
+    const { user, darkMode, refreshGoals } = useApp();
     const [goals, setGoals] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [name, setName] = useState("");
@@ -17,36 +17,69 @@ const Goals = () => {
     const [addingTo, setAddingTo] = useState(null);
     const [addAmount, setAddAmount] = useState("");
 
-    const fetchGoals = async () => {
+    const fetchGoals = useCallback(async () => {
         if (!user) return;
-        const { data } = await supabase.from("goals").select("*").eq("user_id", user.id).order("created_at", { ascending: false });
-        if (data) setGoals(data);
-    };
+        try {
+            const { data, error } = await supabase.from("goals").select("*").eq("user_id", user.id).order("created_at", { ascending: false });
+            if (error) {
+                console.error("Error fetching goals:", error);
+                return;
+            }
+            if (data) setGoals(data);
+        } catch (err) {
+            console.error("Error in fetchGoals:", err);
+        }
+    }, [user]);
 
-    useEffect(() => { fetchGoals(); }, [user]);
+    useEffect(() => { fetchGoals(); }, [fetchGoals]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!name || !target) return;
+        if (!name || !target || !user) return;
         setLoading(true);
-        await supabase.from("goals").insert({ user_id: user.id, name, target: Number(target), saved: Number(saved) || 0, deadline, created_at: new Date().toISOString() });
-        await fetchGoals();
-        setName(""); setTarget(""); setSaved(""); setDeadline(""); setShowForm(false);
+        try {
+            const { error } = await supabase.from("goals").insert({
+                user_id: user.id,
+                name,
+                target: Number(target),
+                saved: Number(saved) || 0,
+                deadline: deadline || null,
+                created_at: new Date().toISOString()
+            });
+            if (error) throw error;
+            await fetchGoals();
+            if (refreshGoals) refreshGoals();
+            setName(""); setTarget(""); setSaved(""); setDeadline(""); setShowForm(false);
+        } catch (err) {
+            console.error("Error creating goal:", err);
+        }
         setLoading(false);
     };
 
     const handleAddAmount = async (goal) => {
         if (!addAmount) return;
-        const newSaved = Number(goal.saved) + Number(addAmount);
-        await supabase.from("goals").update({ saved: newSaved }).eq("id", goal.id);
-        await fetchGoals();
-        setAddingTo(null); setAddAmount("");
+        try {
+            const newSaved = Number(goal.saved) + Number(addAmount);
+            const { error } = await supabase.from("goals").update({ saved: newSaved }).eq("id", goal.id);
+            if (error) throw error;
+            await fetchGoals();
+            if (refreshGoals) refreshGoals();
+            setAddingTo(null); setAddAmount("");
+        } catch (err) {
+            console.error("Error contributing to goal:", err);
+        }
     };
 
     const handleDelete = async (id) => {
-        await supabase.from("goals").delete().eq("id", id);
-        await fetchGoals();
-        setDeleteConfirm(null);
+        try {
+            const { error } = await supabase.from("goals").delete().eq("id", id);
+            if (error) throw error;
+            await fetchGoals();
+            if (refreshGoals) refreshGoals();
+            setDeleteConfirm(null);
+        } catch (err) {
+            console.error("Error deleting goal:", err);
+        }
     };
 
     return (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabase/supabase";
 import { useApp } from "../context/AppContext";
@@ -22,13 +22,21 @@ const Income = () => {
     const [loading, setLoading] = useState(false);
     const [deleteConfirm, setDeleteConfirm] = useState(null);
 
-    const fetchIncomes = async () => {
+    const fetchIncomes = useCallback(async () => {
         if (!user) return;
-        const { data } = await supabase.from("income").select("*").eq("user_id", user.id).order("date", { ascending: false });
-        if (data) setIncomes(data);
-    };
+        try {
+            const { data, error } = await supabase.from("income").select("*").eq("user_id", user.id).order("date", { ascending: false });
+            if (error) {
+                console.error("Error fetching incomes:", error);
+                return;
+            }
+            if (data) setIncomes(data);
+        } catch (err) {
+            console.error("Error in fetchIncomes:", err);
+        }
+    }, [user]);
 
-    useEffect(() => { fetchIncomes(); }, [user]);
+    useEffect(() => { fetchIncomes(); }, [fetchIncomes]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();

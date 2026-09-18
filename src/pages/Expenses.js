@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabase/supabase";
 import { useApp } from "../context/AppContext";
@@ -28,17 +28,25 @@ const Expenses = () => {
     const [sortBy, setSortBy] = useState("newest");
     const [deleteConfirm, setDeleteConfirm] = useState(null);
 
-    const fetchExpenses = async () => {
+    const fetchExpenses = useCallback(async () => {
         if (!user) return;
-        const { data } = await supabase
-            .from("expenses")
-            .select("*")
-            .eq("user_id", user.id)
-            .order("date", { ascending: false });
-        if (data) setExpenses(data);
-    };
+        try {
+            const { data, error } = await supabase
+                .from("expenses")
+                .select("*")
+                .eq("user_id", user.id)
+                .order("date", { ascending: false });
+            if (error) {
+                console.error("Error fetching expenses:", error);
+                return;
+            }
+            if (data) setExpenses(data);
+        } catch (err) {
+            console.error("Error in fetchExpenses:", err);
+        }
+    }, [user]);
 
-    useEffect(() => { fetchExpenses(); }, [user]);
+    useEffect(() => { fetchExpenses(); }, [fetchExpenses]);
 
     const getCategoryIcon = (cat) => CATEGORIES.find(c => c.name === cat)?.icon || "💰";
 

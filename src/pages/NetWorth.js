@@ -28,6 +28,7 @@ const NetWorth = () => {
         assetBreakdown: { English: "Asset Breakdown", "हिंदी": "परिसंपत्ति विवरण", "తెలుగు": "ఆస్తుల విభజన", "ಕನ್ನಡ": "ಆಸ್ತಿಗಳ ವಿವರಣೆ", "മലയാളം": "ആസ്തികളുടെ വിവരണം" }[currentLanguage] || "Asset Breakdown",
         saveBtn: { English: "💾 Save Net Worth", "हिंदी": "💾 कुल संपत्ति सहेजें", "తెలుగు": "💾 నికర విలువను సేవ్ చేయి", "ಕನ್ನಡ": "💾 ನಿವ್ವಳ ಮೌಲ್ಯ ಉಳಿಸಿ", "മലയാളം": "💾 ആകെ ആസ്തി സേവ് ചെയ്യുക" }[currentLanguage] || "💾 Save Net Worth",
         saving: { English: "Saving...", "हिंदी": "सहेज रहा हूँ...", "తెలుగు": "సేవ్ చేస్తోంది...", "ಕನ್ನಡ": "ಉಳಿಸಲಾಗುತ್ತಿದೆ...", "മലയാളം": "സേവ് ചെയ്യുന്നു..." }[currentLanguage] || "Saving...",
+        savedFeedback: { English: "Saved Successfully!", "हिंदी": "सफलतापूर्वक सहेजा गया!", "తెలుగు": "విజయవంతంగా సేవ్ చేయబడింది!", "ಕನ್ನಡ": "ಯಶಸ್ವಿಯಾಗಿ ಉಳಿಸಲಾಗಿದೆ!" }[currentLanguage] || "Saved Successfully!",
         placeholderAsset: { English: "₹ Enter value", "हिंदी": "₹ मूल्य दर्ज करें", "తెలుగు": "₹ విలువను నమోదు చేయండి", "ಕನ್ನಡ": "₹ ಮೌಲ್ಯ ನಮೂದಿಸಿ" }[currentLanguage] || "₹ Enter value",
         placeholderLiability: { English: "₹ Enter amount", "हिंदी": "₹ राशि दर्ज करें", "తెలుగు": "₹ మొత్తాన్ని నమోదు చేయండి", "ಕನ್ನಡ": "₹ ಮೊತ್ತ ನಮೂದಿಸಿ" }[currentLanguage] || "₹ Enter amount"
     };
@@ -109,6 +110,7 @@ const NetWorth = () => {
                     });
             }
             setSaved(true);
+            setTimeout(() => setSaved(false), 3000);
         } catch (err) {
             console.error("Error committing Net Worth data:", err);
         }
@@ -205,7 +207,7 @@ const NetWorth = () => {
 
                 {/* Secure Save Action Dispatch Trigger */}
                 <button type="button" className="btn-primary" onClick={handleSave} disabled={loading} style={{ marginTop: 16, width: "100%", padding: "14px", borderRadius: "12px", fontWeight: 600, fontSize: "14px", cursor: loading ? "not-allowed" : "pointer" }}>
-                    {loading ? nwLabels.saving : nwLabels.saveBtn}
+                    {loading ? nwLabels.saving : saved ? ("✅ " + nwLabels.savedFeedback) : nwLabels.saveBtn}
                 </button>
 
             </div>

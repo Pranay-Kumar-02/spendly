@@ -270,7 +270,7 @@ const Settings = () => {
     const [editingEmail, setEditingEmail] = useState(false);
     const [newEmail, setNewEmail] = useState("");
     const [emailAuthPass, setEmailAuthPass] = useState("");
-    const [profilePic, setProfilePic] = useState(null);
+    const [profilePic, setProfilePic] = useState(ctxProfilePic || null);
     const [picLoading, setPicLoading] = useState(false);
     // CHANGE 1: crop state
     const [cropSrc, setCropSrc] = useState(null);

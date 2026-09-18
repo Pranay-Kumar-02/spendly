@@ -158,6 +158,7 @@ export const AppProvider = ({ children }) => {
         });
 
         return () => subscription.unsubscribe();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     // Dark mode
@@ -232,7 +233,36 @@ export const AppProvider = ({ children }) => {
             t,
             currentTheme, changeTheme,
         }}>
-            {!loading && children}
+            {loading ? (
+                <div style={{
+                    minHeight: "100vh",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    background: darkMode ? "#0F172A" : "#F8FAFC",
+                    color: darkMode ? "#F8FAFC" : "#0F172A",
+                    fontFamily: "'Poppins', sans-serif"
+                }}>
+                    <div style={{
+                        width: 50,
+                        height: 50,
+                        borderRadius: "50%",
+                        border: "3px solid rgba(124, 58, 237, 0.2)",
+                        borderTopColor: "#7C3AED",
+                        animation: "spendly-spin 0.8s linear infinite",
+                        marginBottom: 16
+                    }} />
+                    <style>{`
+                        @keyframes spendly-spin {
+                            to { transform: rotate(360deg); }
+                        }
+                    `}</style>
+                    <div style={{ fontSize: 22, fontWeight: 800, background: "linear-gradient(135deg, #7C3AED, #EC4899)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                        Spendly
+                    </div>
+                </div>
+            ) : children}
         </AppContext.Provider>
     );
 };

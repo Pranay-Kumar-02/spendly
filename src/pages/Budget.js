@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { supabase } from "../supabase/supabase";
 import { useApp } from "../context/AppContext";
@@ -18,26 +18,42 @@ const CATEGORIES = [
 ];
 
 const Budget = () => {
-    const { user, darkMode } = useApp();
+    const { user, darkMode, refreshBudget } = useApp();
     const [budgets, setBudgets] = useState({});
     const [editing, setEditing] = useState(null);
     const [value, setValue] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const fetchBudgets = async () => {
+    const fetchBudgets = useCallback(async () => {
         if (!user) return;
-        const { data } = await supabase.from("budgets").select("*").eq("id", user.id).single();
-        if (data) setBudgets(data);
-    };
+        try {
+            const { data, error } = await supabase.from("budgets").select("*").eq("id", user.id).maybeSingle();
+            if (error) {
+                console.error("Error fetching budgets:", error);
+                return;
+            }
+            if (data) setBudgets(data);
+        } catch (err) {
+            console.error("Error in fetchBudgets:", err);
+        }
+    }, [user]);
 
-    useEffect(() => { fetchBudgets(); }, [user]);
+    useEffect(() => { fetchBudgets(); }, [fetchBudgets]);
 
     const handleSave = async (categoryValue) => {
+        if (!user) return;
         setLoading(true);
-        const updated = { ...budgets, id: user.id, [categoryValue]: Number(value) };
-        await supabase.from("budgets").upsert(updated);
-        setBudgets(updated);
-        setEditing(null); setValue("");
+        try {
+            const updated = { ...budgets, id: user.id, [categoryValue]: Number(value) };
+            const { error } = await supabase.from("budgets").upsert(updated);
+            if (error) throw error;
+            setBudgets(updated);
+            setEditing(null);
+            setValue("");
+            if (refreshBudget) refreshBudget();
+        } catch (err) {
+            console.error("Error updating budget category:", err);
+        }
         setLoading(false);
     };
 

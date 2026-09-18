@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { supabase } from "../supabase/supabase";
 import { useApp } from "../context/AppContext";
@@ -49,19 +49,27 @@ const CreditCard = () => {
     };
 
     // 4. SUPABASE DATA FETCHER
-    const fetchCards = async () => {
+    const fetchCards = useCallback(async () => {
         if (!user) return;
-        const { data } = await supabase
-            .from("creditcards")
-            .select("*")
-            .eq("user_id", user.id)
-            .order("created_at", { ascending: false });
-        if (data) setCards(data);
-    };
+        try {
+            const { data, error } = await supabase
+                .from("creditcards")
+                .select("*")
+                .eq("user_id", user.id)
+                .order("created_at", { ascending: false });
+            if (error) {
+                console.error("Error fetching credit cards:", error);
+                return;
+            }
+            if (data) setCards(data);
+        } catch (err) {
+            console.error("Error in fetchCards:", err);
+        }
+    }, [user]);
 
     useEffect(() => {
         fetchCards();
-    }, [user]);
+    }, [fetchCards]);
 
     // 5. DATABASE ACTION HANDLERS
     const handleAdd = async (e) => {

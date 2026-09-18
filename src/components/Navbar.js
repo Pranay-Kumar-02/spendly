@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useApp } from "../context/AppContext";
 import "../styles/Navbar.css";
@@ -10,13 +10,13 @@ const Navbar = ({ title }) => {
     const [isClearedManually, setIsClearedManually] = useState(false);
 
     // SYSTEM LOCALIZATION MATRIX FOR CORE WARNING REMINDERS
-    const UI_LABELS = {
+    const UI_LABELS = useMemo(() => ({
         notifTitle: { English: "Notifications center", "हिंदी": "सूचना केंद्र", "తెలుగు": "నోటిఫికేషన్స్", "ಕನ್ನಡ": "ಅಧಿಸೂಚನೆಗಳು" }[currentLanguage] || "Notifications",
         clearAllBtn: { English: "Clear All", "हिंदी": "सब साफ़ करें", "తెలుగు": "అన్నీ క్లియర్ చేయి", "ಕನ್ನಡ": "ಎಲ್ಲವನ್ನೂ ಅಳಿಸಿ" }[currentLanguage] || "Clear All",
         noNotif: { English: "Your financial health profile is currently stable. No warnings flagged.", "हिंदी": "कोई नई सूचनाएं नहीं हैं।", "తెలుగు": "లావాదేవీల హెచ్చరికలు ఏవీ లేవు.", "ಕನ್ನಡ": "ಯಾವುದೇ ಹೊಸ ಅಧಿಸೂಚನೆಗಳಿಲ್ಲ." }[currentLanguage] || "No new alerts.",
         budgetWarn: { English: "⚠️ High Spending Alert! You have crossed 80% of your allocated monthly budget tier.", "हिंदी": "⚠️ बजट चेतावनी: आपने अपने मासिक बजट का 80% से अधिक खर्च कर दिया है।", "తెలుగు": "⚠️ బడ్జెట్ హెచ్చరిక! మీరు మీ నెలవారీ బడ్జెట్‌లో 80% కంటే ఎక్కువ ఖర్చు చేశారు.", "ಕನ್ನಡ": "⚠️ வெಚ್ಚದ ಎಚ್ಚರಿಕೆ! ನಿಮ್ಮ ಬಜೆಟ್‌ನ ಶೇ. 80 ಕ್ಕಿಂತ ಹೆಚ್ಚು ಬಳಸಲಾಗಿದೆ." }[currentLanguage] || "⚠️ Budget warning triggered.",
         billSoon: { English: "🔔 Upcoming Due: Bill entry is matching its payment target date within 3 days.", "हिंदी": "🔔 बिल भुगतान अनुस्मारक: 3 दिनों के भीतर देय तिथि।", "తెలుగు": "🔔 బిల్ రిమైండర్: 3 రోజుల్లో బిల్లు గడువు ముగుస్తుంది.", "ಕನ್ನಡ": "🔔 ಬಿಲ್ ಜ್ಞಾಪನೆ: 3 ದಿನಗಳಲ್ಲಿ ಬಿಲ್ ಪಾವತಿಸಬೇಕಾಗಿದೆ." }[currentLanguage] || "🔔 Invoice due milestone incoming."
-    };
+    }), [currentLanguage]);
 
     // DYNAMIC TITLE TRANSLATION DICTIONARY MATRIX
     const translateTitle = (inputTitle) => {
@@ -81,7 +81,7 @@ const Navbar = ({ title }) => {
         });
 
         setActiveAlerts(alertsList);
-    }, [expenses, budget, bills, currentLanguage, isClearedManually]);
+    }, [expenses, budget, bills, currentLanguage, isClearedManually, UI_LABELS]);
 
     // Automatically re-arm metrics scanning if dashboard items change values
     useEffect(() => {

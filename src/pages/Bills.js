@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabase/supabase";
 import { useApp } from "../context/AppContext";
 import Navbar from "../components/Navbar";
 
 const Bills = () => {
-    const { user, darkMode } = useApp();
+    const { user, darkMode, refreshBills } = useApp();
     const [bills, setBills] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [name, setName] = useState("");
@@ -17,33 +17,67 @@ const Bills = () => {
 
     const CATEGORIES = ["Utilities", "Rent", "Insurance", "Subscription", "EMI", "Other"];
 
-    const fetchBills = async () => {
+    const fetchBills = useCallback(async () => {
         if (!user) return;
-        const { data } = await supabase.from("bills").select("*").eq("user_id", user.id).order("due_date", { ascending: true });
-        if (data) setBills(data);
-    };
+        try {
+            const { data, error } = await supabase.from("bills").select("*").eq("user_id", user.id).order("due_date", { ascending: true });
+            if (error) {
+                console.error("Error fetching bills:", error);
+                return;
+            }
+            if (data) setBills(data);
+        } catch (err) {
+            console.error("Error in fetchBills:", err);
+        }
+    }, [user]);
 
-    useEffect(() => { fetchBills(); }, [user]);
+    useEffect(() => { fetchBills(); }, [fetchBills]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!name || !amount) return;
+        if (!name || !amount || !user) return;
         setLoading(true);
-        await supabase.from("bills").insert({ user_id: user.id, name, amount: Number(amount), due_date: dueDate, category, is_paid: false, created_at: new Date().toISOString() });
-        await fetchBills();
-        setName(""); setAmount(""); setDueDate(""); setCategory("Utilities"); setShowForm(false);
+        try {
+            const { error } = await supabase.from("bills").insert({
+                user_id: user.id,
+                name,
+                amount: Number(amount),
+                due_date: dueDate || null,
+                category,
+                is_paid: false,
+                created_at: new Date().toISOString()
+            });
+            if (error) throw error;
+            await fetchBills();
+            if (refreshBills) refreshBills();
+            setName(""); setAmount(""); setDueDate(""); setCategory("Utilities"); setShowForm(false);
+        } catch (err) {
+            console.error("Error creating bill:", err);
+        }
         setLoading(false);
     };
 
     const togglePaid = async (bill) => {
-        await supabase.from("bills").update({ is_paid: !bill.is_paid }).eq("id", bill.id);
-        await fetchBills();
+        try {
+            const { error } = await supabase.from("bills").update({ is_paid: !bill.is_paid }).eq("id", bill.id);
+            if (error) throw error;
+            await fetchBills();
+            if (refreshBills) refreshBills();
+        } catch (err) {
+            console.error("Error toggling bill status:", err);
+        }
     };
 
     const handleDelete = async (id) => {
-        await supabase.from("bills").delete().eq("id", id);
-        await fetchBills();
-        setDeleteConfirm(null);
+        try {
+            const { error } = await supabase.from("bills").delete().eq("id", id);
+            if (error) throw error;
+            await fetchBills();
+            if (refreshBills) refreshBills();
+            setDeleteConfirm(null);
+        } catch (err) {
+            console.error("Error deleting bill:", err);
+        }
     };
 
     const getDaysUntil = (dateStr) => {

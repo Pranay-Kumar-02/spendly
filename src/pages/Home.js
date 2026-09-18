@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabase/supabase";
 import { useApp } from "../context/AppContext";
@@ -14,20 +14,20 @@ const Home = () => {
 
     // 2. STATE VARIABLE INITIALIZERS
     const [greeting, setGreeting] = useState("");
-    const [showBudgetForm, setShowBudgetForm] = useState(false);
-    const [budgetAmount, setBudgetAmount] = useState("");
-    const [loading, setLoading] = useState(false);
     const [dailyTip, setDailyTip] = useState("");
     const [tipLoading, setTipLoading] = useState(false);
     const [tipFetched, setTipFetched] = useState(false);
+    const [showBudgetForm, setShowBudgetForm] = useState(false);
+    const [budgetAmount, setBudgetAmount] = useState("");
+    const [loading, setLoading] = useState(false);
 
-    // UNIFIED QUICK ADD OVERLAY MODAL CONTROLLERS
+    // Quick Add Modal States
     const [showQuickAdd, setShowQuickAdd] = useState(false);
     const [quickAddTab, setQuickAddTab] = useState("expense");
     const [quickAmount, setQuickAmount] = useState("");
     const [quickCategory, setQuickCategory] = useState("Food");
     const [quickDescription, setQuickDescription] = useState("");
-    const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
+    const [date] = useState(new Date().toISOString().split("T")[0]);
 
     const OPENROUTER_API_KEY = process.env.REACT_APP_OPENROUTER_API_KEY;
     const firstName = displayName || "User";
@@ -129,7 +129,7 @@ const Home = () => {
     }, []);
 
     // 5. EXTERNAL AI PROMPT DISPATCH GENERATOR
-    const fetchDailyTip = async () => {
+    const fetchDailyTip = useCallback(async () => {
         if (tipLoading) return;
         setTipLoading(true);
         setDailyTip("");
@@ -179,7 +179,7 @@ MANDATORY LANGUAGE RULE: You MUST output your full tip sentence inside the exact
             setTipFetched(true);
         }
         setTipLoading(false);
-    };
+    }, [tipLoading, totalIncome, totalExpenses, expenses, OPENROUTER_API_KEY, budget, currentLanguage]);
 
     useEffect(() => { setTipFetched(false); }, [currentLanguage]);
 
@@ -188,7 +188,7 @@ MANDATORY LANGUAGE RULE: You MUST output your full tip sentence inside the exact
             const timer = setTimeout(() => { fetchDailyTip(); }, 1000);
             return () => clearTimeout(timer);
         }
-    }, [expenses.length, incomes.length, tipFetched]);
+    }, [expenses.length, incomes.length, tipFetched, fetchDailyTip]);
 
     // 6. DB INSERTS & ACTION MUTATOR HANDLERS
     const handleQuickAddSubmit = async (e) => {
