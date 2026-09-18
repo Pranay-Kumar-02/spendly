@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { collection, query, where, onSnapshot, doc, getDoc } from "firebase/firestore";
-import { db } from "../firebase/firebase";
+import { supabase } from "../supabase/supabase";
 import { useApp } from "../context/AppContext";
 import Navbar from "../components/Navbar";
 
@@ -20,7 +19,7 @@ const FormattedMessage = ({ content }) => {
         <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
             {lines.map((line, i) => {
                 if (!line.trim()) return <div key={i} style={{ height: 4 }} />;
-                if (line.trim().match(/^[\*\-•]\s/)) {
+                if (line.trim().match(/^[*•-]\s/)) {
                     return (
                         <div key={i} style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
                             <span style={{ color: "#7C3AED", fontWeight: 700, flexShrink: 0 }}>•</span>
@@ -47,7 +46,7 @@ const FormattedMessage = ({ content }) => {
 };
 
 const AIAdvisor = () => {
-    const { user, darkMode, displayName, currentLanguage, t } = useApp();
+    const { user, darkMode, displayName, currentLanguage } = useApp();
     const [expenses, setExpenses] = useState([]);
     const [incomes, setIncomes] = useState([]);
     const [budget, setBudget] = useState(50000);
@@ -114,31 +113,45 @@ const AIAdvisor = () => {
 
     useEffect(() => {
         if (!user) return;
-        const expQuery = query(collection(db, "expenses"), where("userId", "==", user.uid));
-        const incQuery = query(collection(db, "income"), where("userId", "==", user.uid));
+        const fetchAdvisorData = async () => {
+            try {
+                const { data: exp } = await supabase
+                    .from("expenses")
+                    .select("*")
+                    .eq("user_id", user.id)
+                    .order("date", { ascending: false });
+                if (exp) setExpenses(exp);
 
-        const unsub1 = onSnapshot(expQuery, snap => setExpenses(snap.docs.map(d => ({ id: d.id, ...d.data() }))));
-        const unsub2 = onSnapshot(incQuery, snap => setIncomes(snap.docs.map(d => ({ id: d.id, ...d.data() }))));
+                const { data: inc } = await supabase
+                    .from("income")
+                    .select("*")
+                    .eq("user_id", user.id)
+                    .order("date", { ascending: false });
+                if (inc) setIncomes(inc);
 
-        // 🚀 NEW: Real-time listener for profile picture updates in AIAdvisor
-        const unsubSettings = onSnapshot(doc(db, "settings", user.uid), snap => {
-            if (snap.exists()) {
-                const data = snap.data();
-                if (data.photoURL || data.profilePic) {
-                    setProfilePic(data.photoURL || data.profilePic);
-                } else {
-                    setProfilePic(null);
+                const { data: bgt } = await supabase
+                    .from("budgets")
+                    .select("*")
+                    .eq("id", user.id)
+                    .maybeSingle();
+                if (bgt && (bgt.total_budget || bgt.totalBudget)) {
+                    setBudget(bgt.total_budget || bgt.totalBudget);
                 }
+
+                const { data: sett } = await supabase
+                    .from("settings")
+                    .select("*")
+                    .eq("id", user.id)
+                    .maybeSingle();
+                if (sett) {
+                    const pic = sett.profile_pic || sett.profilePic;
+                    if (pic) setProfilePic(pic);
+                }
+            } catch (err) {
+                console.error("AIAdvisor data fetch error:", err);
             }
-        });
-
-        const fetchBudget = async () => {
-            const snap = await getDoc(doc(db, "budgets", user.uid));
-            if (snap.exists() && snap.data().totalBudget) setBudget(snap.data().totalBudget);
         };
-        fetchBudget();
-
-        return () => { unsub1(); unsub2(); unsubSettings(); };
+        fetchAdvisorData();
     }, [user]);
 
     useEffect(() => {

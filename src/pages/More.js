@@ -2,34 +2,43 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "../context/AppContext";
-import { auth, db } from "../firebase/firebase";
-import { signOut } from "firebase/auth";
-import { doc, onSnapshot } from "firebase/firestore";
+import { supabase } from "../supabase/supabase";
 import Navbar from "../components/Navbar";
 import "../styles/More.css";
 
 const More = () => {
-    const { user, darkMode, displayName, currentLanguage } = useApp();
+    const { user, darkMode, displayName, currentLanguage, profilePic: ctxProfilePic } = useApp();
     const navigate = useNavigate();
 
-    // Fallback immediately to user.photoURL to prevent blank flashes
-    const [profilePic, setProfilePic] = useState(user?.photoURL || null);
+    const [profilePic, setProfilePic] = useState(ctxProfilePic || null);
 
     useEffect(() => {
         if (!user) return;
-        const unsub = onSnapshot(doc(db, "settings", user.uid), snap => {
-            if (snap.exists() && (snap.data().photoURL || snap.data().profilePic)) {
-                setProfilePic(snap.data().photoURL || snap.data().profilePic);
-            } else {
-                setProfilePic(user.photoURL || null);
+        if (ctxProfilePic) {
+            setProfilePic(ctxProfilePic);
+            return;
+        }
+        const fetchPic = async () => {
+            try {
+                const { data } = await supabase
+                    .from("settings")
+                    .select("profile_pic, profilePic")
+                    .eq("id", user.id)
+                    .maybeSingle();
+                if (data?.profile_pic || data?.profilePic) {
+                    setProfilePic(data.profile_pic || data.profilePic);
+                }
+            } catch (err) {
+                console.error("Error fetching profile pic:", err);
             }
-        });
-        return () => unsub();
-    }, [user]);
+        };
+        fetchPic();
+    }, [user, ctxProfilePic]);
 
     const handleLogout = async () => {
         try {
-            await signOut(auth);
+            await supabase.auth.signOut();
+            navigate("/login");
         } catch (err) {
             console.error("Logout error:", err);
         }

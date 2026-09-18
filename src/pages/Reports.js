@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { collection, query, where, onSnapshot, doc, getDoc, setDoc } from "firebase/firestore";
-import { db } from "../firebase/firebase";
+import { supabase } from "../supabase/supabase";
 import { useApp } from "../context/AppContext";
 import Navbar from "../components/Navbar";
 import {
@@ -145,32 +144,39 @@ const Reports = () => {
         return icons[catName] || "💰";
     };
 
-    // FIREBASE LIFECYCLE LISTENERS
+    // SUPABASE LIFECYCLE DATA FETCH
     useEffect(() => {
         if (!user) return;
-        const expQuery = query(collection(db, "expenses"), where("userId", "==", user.uid));
-        const incQuery = query(collection(db, "income"), where("userId", "==", user.uid));
+        const fetchReportsData = async () => {
+            try {
+                const { data: exp } = await supabase
+                    .from("expenses")
+                    .select("*")
+                    .eq("user_id", user.id)
+                    .order("date", { ascending: false });
+                if (exp) setExpenses(exp);
 
-        const unsub1 = onSnapshot(expQuery, snap => {
-            const data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-            setExpenses(data.sort((a, b) => new Date(b.date) - new Date(a.date)));
-        });
-        const unsub2 = onSnapshot(incQuery, snap => {
-            const data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-            setIncomes(data.sort((a, b) => new Date(b.date) - new Date(a.date)));
-        });
+                const { data: inc } = await supabase
+                    .from("income")
+                    .select("*")
+                    .eq("user_id", user.id)
+                    .order("date", { ascending: false });
+                if (inc) setIncomes(inc);
 
-        const fetchBudget = async () => {
-            const snap = await getDoc(doc(db, "budgets", user.uid));
-            if (snap.exists()) {
-                const data = snap.data();
-                if (data.totalBudget) setBudget(data.totalBudget);
-                if (data.categories) setCategoryLimits(data.categories);
+                const { data: bgt } = await supabase
+                    .from("budgets")
+                    .select("*")
+                    .eq("id", user.id)
+                    .maybeSingle();
+                if (bgt) {
+                    if (bgt.total_budget || bgt.totalBudget) setBudget(bgt.total_budget || bgt.totalBudget);
+                    if (bgt.categories) setCategoryLimits(bgt.categories);
+                }
+            } catch (err) {
+                console.error("Reports data fetch error:", err);
             }
         };
-        fetchBudget();
-
-        return () => { unsub1(); unsub2(); };
+        fetchReportsData();
     }, [user]);
 
     // FILTER TRANSACTIONS BY DATE RANGE
@@ -311,13 +317,17 @@ const Reports = () => {
     // SAVE CATEGORY CAPS HANDLER
     const handleUpdateBudget = async (e) => {
         e.preventDefault();
+        if (!user) return;
         setLoadingBudget(true);
         try {
-            await setDoc(doc(db, "budgets", user.uid), {
-                totalBudget: Number(budgetFormAmount) || budget,
+            const newBudget = Number(budgetFormAmount) || budget;
+            await supabase.from("budgets").upsert({
+                id: user.id,
+                total_budget: newBudget,
+                totalBudget: newBudget,
                 categories: categoryLimits
-            }, { merge: true });
-            if (budgetFormAmount) setBudget(Number(budgetFormAmount));
+            });
+            if (budgetFormAmount) setBudget(newBudget);
             setShowBudgetForm(false);
         } catch (err) { console.error(err); }
         setLoadingBudget(false);

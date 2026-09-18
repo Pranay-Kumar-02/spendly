@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { collection, query, where, onSnapshot, addDoc, deleteDoc, doc } from "firebase/firestore";
-import { db } from "../firebase/firebase";
+import { motion } from "framer-motion";
+import { supabase } from "../supabase/supabase";
 import { useApp } from "../context/AppContext";
 import Navbar from "../components/Navbar";
 
 const CreditCard = () => {
     // 1. GLOBAL CONTEXT STATE PROVIDERS
-    const { user, darkMode, currentLanguage } = useApp();
+    const { user, darkMode, currentLanguage, refreshCards } = useApp();
 
     // 2. LOCAL STATE INITIALIZERS
     const [cards, setCards] = useState([]);
@@ -49,28 +48,42 @@ const CreditCard = () => {
         placeholderDue: { English: "e.g. 15000", "हिंदी": "जैसे: 15000", "తెలుగు": "ఉదా: 15000" }[currentLanguage] || "e.g. 15000"
     };
 
-    // 4. FIREBASE DATA LISTENERS TELEMETRY SYNCS
-    useEffect(() => {
+    // 4. SUPABASE DATA FETCHER
+    const fetchCards = async () => {
         if (!user) return;
-        const q = query(collection(db, "creditcards"), where("userId", "==", user.uid));
-        return onSnapshot(q, snap => setCards(snap.docs.map(d => ({ id: d.id, ...d.data() }))));
+        const { data } = await supabase
+            .from("creditcards")
+            .select("*")
+            .eq("user_id", user.id)
+            .order("created_at", { ascending: false });
+        if (data) setCards(data);
+    };
+
+    useEffect(() => {
+        fetchCards();
     }, [user]);
 
     // 5. DATABASE ACTION HANDLERS
     const handleAdd = async (e) => {
         e.preventDefault();
-        if (!cardName || !bank || !limit) return;
+        if (!cardName || !bank || !limit || !user) return;
         setLoading(true);
         try {
-            await addDoc(collection(db, "creditcards"), {
-                userId: user.uid,
-                cardName, bank,
+            await supabase.from("creditcards").insert({
+                user_id: user.id,
+                cardName,
+                card_name: cardName,
+                bank,
                 limit: Number(limit),
                 used: Number(used || 0),
                 dueDate,
+                due_date: dueDate,
                 dueAmount: Number(dueAmount || 0),
-                createdAt: new Date().toISOString(),
+                due_amount: Number(dueAmount || 0),
+                created_at: new Date().toISOString(),
             });
+            await fetchCards();
+            if (refreshCards) refreshCards();
             setCardName(""); setBank(""); setLimit(""); setUsed(""); setDueDate(""); setDueAmount("");
             setShowForm(false);
         } catch (err) {
@@ -81,7 +94,9 @@ const CreditCard = () => {
 
     const handleDelete = async (id) => {
         try {
-            await deleteDoc(doc(db, "creditcards", id));
+            await supabase.from("creditcards").delete().eq("id", id);
+            await fetchCards();
+            if (refreshCards) refreshCards();
         } catch (err) {
             console.error("Error purging document structure from database storage:", err);
         }

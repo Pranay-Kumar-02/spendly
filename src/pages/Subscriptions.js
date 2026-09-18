@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { collection, query, where, onSnapshot, doc, addDoc, updateDoc, deleteDoc } from "firebase/firestore";
-import { db } from "../firebase/firebase";
+import { supabase } from "../supabase/supabase";
 import { useApp } from "../context/AppContext";
 import Navbar from "../components/Navbar";
 
 const Subscriptions = () => {
-    const { user, darkMode, currentLanguage } = useApp();
+    const { user, darkMode, currentLanguage, refreshExpenses } = useApp();
 
     const [subscriptions, setSubscriptions] = useState([]);
     const [showModal, setShowModal] = useState(false);
@@ -47,15 +46,36 @@ const Subscriptions = () => {
     }, []);
 
     // ── 1. FETCH SUBSCRIPTIONS ──
-    useEffect(() => {
+    const fetchSubscriptions = useCallback(async () => {
         if (!user) return;
-        const q = query(collection(db, "subscriptions"), where("userId", "==", user.uid));
-        const unsub = onSnapshot(q, (snap) => {
-            const data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-            setSubscriptions(data.sort((a, b) => new Date(a.nextDate) - new Date(b.nextDate)));
-        });
-        return () => unsub();
+        try {
+            const { data, error } = await supabase
+                .from("subscriptions")
+                .select("*")
+                .eq("user_id", user.id)
+                .order("next_date", { ascending: true });
+
+            if (error) {
+                console.error("Error fetching subscriptions:", error);
+                return;
+            }
+            if (data) {
+                const normalized = data.map(d => ({
+                    id: d.id,
+                    ...d,
+                    nextDate: d.nextDate || d.next_date,
+                    createdAt: d.createdAt || d.created_at
+                }));
+                setSubscriptions(normalized.sort((a, b) => new Date(a.nextDate) - new Date(b.nextDate)));
+            }
+        } catch (err) {
+            console.error("Error fetching subscriptions:", err);
+        }
     }, [user]);
+
+    useEffect(() => {
+        fetchSubscriptions();
+    }, [fetchSubscriptions]);
 
     // ── 2. THE AUTOMATION ENGINE (CLIENT-SIDE) ──
     useEffect(() => {
@@ -64,6 +84,7 @@ const Subscriptions = () => {
         const processDueSubscriptions = async () => {
             const today = new Date();
             today.setHours(0, 0, 0, 0); // Normalize to start of day
+            let updatedAny = false;
 
             for (const sub of subscriptions) {
                 const subDate = new Date(sub.nextDate);
@@ -71,13 +92,14 @@ const Subscriptions = () => {
                 if (subDate <= today) {
                     try {
                         // 1. Auto-log the expense
-                        await addDoc(collection(db, "expenses"), {
-                            userId: user.uid,
+                        await supabase.from("expenses").insert({
+                            user_id: user.id,
                             amount: Number(sub.amount),
                             category: sub.category,
                             description: `Auto-Paid: ${sub.name}`,
-                            date: new Date().toISOString(),
-                            isAutoPaid: true
+                            date: new Date().toISOString().split("T")[0],
+                            isAutoPaid: true,
+                            is_autopaid: true
                         });
 
                         // 2. Calculate the next billing cycle
@@ -85,48 +107,68 @@ const Subscriptions = () => {
                         if (sub.cycle === "Monthly") newNextDate.setMonth(newNextDate.getMonth() + 1);
                         if (sub.cycle === "Yearly") newNextDate.setFullYear(newNextDate.getFullYear() + 1);
 
-                        // 3. Update the subscription record in Firebase
-                        await updateDoc(doc(db, "subscriptions", sub.id), {
+                        // 3. Update the subscription record in Supabase
+                        await supabase.from("subscriptions").update({
+                            next_date: newNextDate.toISOString(),
                             nextDate: newNextDate.toISOString()
-                        });
+                        }).eq("id", sub.id);
 
                         toast(`✅ Auto-paid ${sub.name} (₹${sub.amount})!`);
+                        updatedAny = true;
                     } catch (err) {
                         console.error("Auto-pay failed:", err);
                     }
                 }
             }
+            if (updatedAny) {
+                if (refreshExpenses) refreshExpenses();
+                fetchSubscriptions();
+            }
         };
 
         processDueSubscriptions();
-    }, [subscriptions, user, toast]);
+    }, [subscriptions, user, toast, refreshExpenses, fetchSubscriptions]);
 
     // ── 3. ADD NEW SUBSCRIPTION ──
     const handleAddSub = async (e) => {
         e.preventDefault();
         if (!subName || !subAmount || !nextDate) { toast("❌ Please fill all fields", false); return; }
+        if (!user) return;
         setLoading(true);
         try {
-            await addDoc(collection(db, "subscriptions"), {
-                userId: user.uid,
+            const { error } = await supabase.from("subscriptions").insert({
+                user_id: user.id,
                 name: subName,
                 amount: Number(subAmount),
                 category: subCategory,
                 cycle: subCycle,
+                next_date: new Date(nextDate).toISOString(),
                 nextDate: new Date(nextDate).toISOString(),
-                createdAt: new Date().toISOString()
+                created_at: new Date().toISOString()
             });
+            if (error) throw error;
             toast(`✅ ${subName} subscription added!`);
             setShowModal(false);
             setSubName(""); setSubAmount(""); setNextDate("");
-        } catch (err) { toast("❌ Failed to add", false); }
+            fetchSubscriptions();
+        } catch (err) { 
+            console.error("Failed to add subscription:", err);
+            toast("❌ Failed to add", false); 
+        }
         setLoading(false);
     };
 
     const handleDelete = async (id, name) => {
         if (!window.confirm(`Delete ${name} subscription?`)) return;
-        await deleteDoc(doc(db, "subscriptions", id));
-        toast(`🗑️ ${name} deleted.`);
+        try {
+            const { error } = await supabase.from("subscriptions").delete().eq("id", id);
+            if (error) throw error;
+            toast(`🗑️ ${name} deleted.`);
+            setSubscriptions(prev => prev.filter(s => s.id !== id));
+        } catch (err) {
+            console.error("Failed to delete subscription:", err);
+            toast("❌ Failed to delete", false);
+        }
     };
 
     // Computations

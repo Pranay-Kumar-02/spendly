@@ -1,15 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { collection, addDoc } from "firebase/firestore";
-import { db } from "../firebase/firebase";
+import { supabase } from "../supabase/supabase";
 import { useApp } from "../context/AppContext";
 import "../styles/BottomNav.css";
 
 const BottomNav = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const { user, currentLanguage } = useApp();
+    const { user, currentLanguage, refreshExpenses, refreshIncomes } = useApp();
     const [showQuickAdd, setShowQuickAdd] = useState(false);
     const [type, setType] = useState("expense");
     const [amount, setAmount] = useState("");
@@ -74,17 +73,29 @@ const BottomNav = () => {
 
     const handleQuickAdd = async (e) => {
         e.preventDefault();
-        if (!amount) return;
+        if (!amount || !user) return;
         setLoading(true);
         try {
             const col = type === "expense" ? "expenses" : "income";
-            const payload = { userId: user.uid, amount: Number(amount), description, date: new Date().toISOString(), createdAt: new Date().toISOString() };
+            const payload = {
+                user_id: user.id,
+                amount: Number(amount),
+                description,
+                date: new Date().toISOString(),
+                created_at: new Date().toISOString()
+            };
             if (type === "expense") payload.category = category;
             else payload.type = category;
-            await addDoc(collection(db, col), payload);
+
+            const { error } = await supabase.from(col).insert(payload);
+            if (error) throw error;
+
+            if (type === "expense" && refreshExpenses) refreshExpenses();
+            if (type === "income" && refreshIncomes) refreshIncomes();
+
             setAmount(""); setDescription(""); setSuccess(true);
             setTimeout(() => { setSuccess(false); setShowQuickAdd(false); }, 1200);
-        } catch (err) { console.error(err); }
+        } catch (err) { console.error("QuickAdd error:", err); }
         setLoading(false);
     };
 

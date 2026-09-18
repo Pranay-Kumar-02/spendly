@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import { db } from "../firebase/firebase";
+import { motion } from "framer-motion";
+import { supabase } from "../supabase/supabase";
 import { useApp } from "../context/AppContext";
 import Navbar from "../components/Navbar";
 
 const Emergency = () => {
     // 1. GLOBAL CONTEXT STATE PROVIDERS
-    const { user, darkMode, currentLanguage } = useApp();
+    const { user, darkMode, currentLanguage, refreshEmergency } = useApp();
 
     // 2. LOCAL STATE INITIALIZERS
     const [target, setTarget] = useState("");
@@ -47,14 +46,32 @@ const Emergency = () => {
         placeholderAddAmt: { English: "Enter amount", "हिंदी": "राशि दर्ज करें", "తెలుగు": "మొత్తాన్ని నమోదు చేయండి", "ಕನ್ನಡ": "ಮೊತ್ತ ನಮೂದಿಸಿ", "മലയാളം": "തുക നൽകുക" }[currentLanguage] || "Enter amount"
     };
 
-    // 4. FIREBASE TELEMETRY REAL-TIME LOG LISTENERS
+    // 4. SUPABASE TELEMETRY LISTENERS
     useEffect(() => {
         if (!user) return;
         const fetchEmergencyLogs = async () => {
             try {
-                const docRef = doc(db, "emergency", user.uid);
-                const snap = await getDoc(docRef);
-                if (snap.exists()) setData(snap.data());
+                const { data: emerData, error } = await supabase
+                    .from("emergency")
+                    .select("*")
+                    .eq("user_id", user.id)
+                    .order("created_at", { ascending: false })
+                    .limit(1)
+                    .maybeSingle();
+
+                if (error) {
+                    console.error("Error pulling Emergency Fund:", error);
+                    return;
+                }
+                if (emerData) {
+                    const normalized = {
+                        ...emerData,
+                        monthlyExpense: emerData.monthlyExpense ?? emerData.monthly_expense ?? 0,
+                        target: emerData.target ?? 0,
+                        saved: emerData.saved ?? 0
+                    };
+                    setData(normalized);
+                }
             } catch (err) {
                 console.error("Error pulling Emergency Fund context telemetry:", err);
             }
@@ -65,16 +82,24 @@ const Emergency = () => {
     // 5. DATA INSERTS & MUTATORS DISPATCH HANDLERS
     const handleSave = async (e) => {
         e.preventDefault();
+        if (!user) return;
         setLoading(true);
         try {
             const newData = {
+                user_id: user.id,
                 target: Number(target),
                 saved: Number(saved),
+                monthly_expense: Number(monthlyExpense),
                 monthlyExpense: Number(monthlyExpense),
-                updatedAt: new Date().toISOString(),
+                updated_at: new Date().toISOString()
             };
-            await setDoc(doc(db, "emergency", user.uid), newData);
+            if (data?.id) {
+                newData.id = data.id;
+            }
+            const { error } = await supabase.from("emergency").upsert(newData);
+            if (error) throw error;
             setData(newData);
+            if (refreshEmergency) refreshEmergency();
         } catch (err) {
             console.error("Error establishing Emergency setup document:", err);
         }
@@ -82,12 +107,19 @@ const Emergency = () => {
     };
 
     const handleAddSaving = async () => {
-        if (!data || !addAmount) return;
+        if (!user || !data || !addAmount) return;
         try {
-            const updated = { ...data, saved: data.saved + Number(addAmount) };
-            await setDoc(doc(db, "emergency", user.uid), updated);
+            const updated = { 
+                ...data, 
+                user_id: user.id,
+                saved: (Number(data.saved) || 0) + Number(addAmount),
+                updated_at: new Date().toISOString()
+            };
+            const { error } = await supabase.from("emergency").upsert(updated);
+            if (error) throw error;
             setData(updated);
             setAddAmount("");
+            if (refreshEmergency) refreshEmergency();
         } catch (err) {
             console.error("Error executing savings incremental update:", err);
         }

@@ -1,15 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useApp } from "../context/AppContext";
-import { auth, db } from "../firebase/firebase";
-import {
-    signOut, updatePassword, EmailAuthProvider,
-    reauthenticateWithCredential, updateProfile
-} from "firebase/auth";
-import {
-    doc, getDoc, setDoc, collection,
-    query, where, getDocs, deleteDoc
-} from "firebase/firestore";
+import { supabase } from "../supabase/supabase";
 import Navbar from "../components/Navbar";
 import * as XLSX from "xlsx";
 
@@ -269,6 +261,7 @@ const Settings = () => {
         profilePic: ctxProfilePic,
         setProfilePic: setCtxProfilePic,
         expenses, incomes, budget,
+        refreshExpenses, refreshIncomes, refreshGoals, refreshBills, refreshCards, refreshSettings,
     } = useApp();
 
     const [displayName, setDisplayName] = useState("");
@@ -320,29 +313,46 @@ const Settings = () => {
 
     useEffect(function () {
         if (!user) return;
-        const name = user.displayName
+        const name = user.user_metadata?.display_name
+            || user.displayName
             || user.email?.split("@")[0]?.replace(/\./g, " ")?.replace(/\b\w/g, function (c) { return c.toUpperCase(); })
             || "User";
         setDisplayName(name);
-        getDoc(doc(db, "settings", user.uid)).then(function (snap) {
-            if (!snap.exists()) return;
-            const d = snap.data();
-            if (d.profilePic) {
-                setProfilePic(d.profilePic);
-                if (setCtxProfilePic) setCtxProfilePic(d.profilePic); // CHANGE 2: sync to context
+
+        supabase.from("settings").select("*").eq("id", user.id).maybeSingle().then(function ({ data: d }) {
+            if (!d) return;
+            const pic = d.profile_pic || d.profilePic;
+            if (pic) {
+                setProfilePic(pic);
+                if (setCtxProfilePic) setCtxProfilePic(pic);
             }
-            if (d.pinLockEnabled !== undefined) setPinLock(d.pinLockEnabled);
-            if (d.budgetAlerts !== undefined) setBudgetAlerts(d.budgetAlerts);
-            if (d.weeklyReport !== undefined) setWeeklyReport(d.weeklyReport);
-            if (d.appLock !== undefined) setAppLock(d.appLock);
-            if (d.transactionNotif !== undefined) setTransactionNotif(d.transactionNotif);
-            if (d.billReminders !== undefined) setBillReminders(d.billReminders);
+            if (d.pin_lock_enabled !== undefined) setPinLock(d.pin_lock_enabled);
+            else if (d.pinLockEnabled !== undefined) setPinLock(d.pinLockEnabled);
+
+            if (d.budget_alerts !== undefined) setBudgetAlerts(d.budget_alerts);
+            else if (d.budgetAlerts !== undefined) setBudgetAlerts(d.budgetAlerts);
+
+            if (d.weekly_report !== undefined) setWeeklyReport(d.weekly_report);
+            else if (d.weeklyReport !== undefined) setWeeklyReport(d.weeklyReport);
+
+            if (d.app_lock !== undefined) setAppLock(d.app_lock);
+            else if (d.appLock !== undefined) setAppLock(d.appLock);
+
+            if (d.transaction_notif !== undefined) setTransactionNotif(d.transaction_notif);
+            else if (d.transactionNotif !== undefined) setTransactionNotif(d.transactionNotif);
+
+            if (d.bill_reminders !== undefined) setBillReminders(d.bill_reminders);
+            else if (d.billReminders !== undefined) setBillReminders(d.billReminders);
         }).catch(console.error);
+
         applyThemeNow(currentTheme);
-    }, [user]);
+    }, [user, currentTheme, applyThemeNow, setCtxProfilePic]);
 
     const save = async function (key, value) {
-        try { await setDoc(doc(db, "settings", user.uid), { [key]: value }, { merge: true }); } catch (e) { console.error(e); }
+        if (!user) return;
+        try {
+            await supabase.from("settings").upsert({ id: user.id, [key]: value });
+        } catch (e) { console.error(e); }
     };
 
     // CHANGE 1: file select → open crop instead of direct upload
@@ -358,43 +368,51 @@ const Settings = () => {
     const handleCropDone = async function (b64) {
         setCropSrc(null); setPicLoading(true);
         setProfilePic(b64);
-        if (setCtxProfilePic) setCtxProfilePic(b64); // CHANGE 2: update all pages instantly
+        if (setCtxProfilePic) setCtxProfilePic(b64);
+        await save("profile_pic", b64);
         await save("profilePic", b64);
-        try { await updateProfile(auth.currentUser, { photoURL: b64 }); } catch (_) { }
+        try {
+            await supabase.auth.updateUser({ data: { profile_pic: b64 } });
+        } catch (_) { }
+        if (refreshSettings) refreshSettings();
         toast("✅ Profile picture updated!"); setPicLoading(false);
     };
 
     const handleRemovePic = async function () {
         setProfilePic(null);
-        if (setCtxProfilePic) setCtxProfilePic(null); // CHANGE 2: sync removal
+        if (setCtxProfilePic) setCtxProfilePic(null);
+        await save("profile_pic", "");
         await save("profilePic", "");
-        try { await updateProfile(auth.currentUser, { photoURL: "" }); } catch (_) { }
+        try {
+            await supabase.auth.updateUser({ data: { profile_pic: "" } });
+        } catch (_) { }
+        if (refreshSettings) refreshSettings();
         toast("✅ Profile picture removed!");
     };
 
     const handleSaveName = async function () {
-        if (!nameInput.trim()) return; setLoading(true);
+        if (!nameInput.trim() || !user) return; setLoading(true);
         try {
-            await updateProfile(auth.currentUser, { displayName: nameInput.trim() });
+            await supabase.auth.updateUser({ data: { display_name: nameInput.trim() } });
+            await save("display_name", nameInput.trim());
             await save("displayName", nameInput.trim());
             setDisplayName(nameInput.trim());
             if (setCtxName) setCtxName(nameInput.trim());
+            if (refreshSettings) refreshSettings();
             setEditingName(false); setNameInput(""); toast("✅ Name updated!");
         } catch (e) { toast("❌ " + e.message, false); }
         setLoading(false);
     };
 
     const handleUpdateEmail = async function () {
-        if (!newEmail.trim() || !emailAuthPass) { toast("❌ Fill all fields!", false); return; }
+        if (!newEmail.trim() || !user) { toast("❌ Fill all fields!", false); return; }
         setLoading(true);
         try {
-            const cred = EmailAuthProvider.credential(user.email, emailAuthPass);
-            await reauthenticateWithCredential(auth.currentUser, cred);
-            const { updateEmail } = await import("firebase/auth");
-            await updateEmail(auth.currentUser, newEmail.trim());
-            toast("✅ Email updated! Please verify your new email.");
+            const { error } = await supabase.auth.updateUser({ email: newEmail.trim() });
+            if (error) throw error;
+            toast("✅ Verification link sent to your new email!");
             setEditingEmail(false); setNewEmail(""); setEmailAuthPass("");
-        } catch (e) { toast("❌ " + e.message.replace("Firebase:", "").trim(), false); }
+        } catch (e) { toast("❌ " + e.message, false); }
         setLoading(false);
     };
 
@@ -404,11 +422,10 @@ const Settings = () => {
         if (newPassword.length < 6) { toast("❌ Min 6 characters required!", false); return; }
         setLoading(true);
         try {
-            const cred = EmailAuthProvider.credential(user.email, currentPassword);
-            await reauthenticateWithCredential(auth.currentUser, cred);
-            await updatePassword(auth.currentUser, newPassword);
+            const { error } = await supabase.auth.updateUser({ password: newPassword });
+            if (error) throw error;
             toast("✅ Password updated!"); setCurrentPassword(""); setNewPassword(""); setConfirmPassword("");
-        } catch (e) { toast("❌ " + e.message.replace("Firebase:", "").trim(), false); }
+        } catch (e) { toast("❌ " + e.message, false); }
         setLoading(false);
     };
 
@@ -512,15 +529,20 @@ const Settings = () => {
     };
 
     const handleClearData = async function () {
-        if (deleteConfirmText !== "DELETE") { toast("❌ Type DELETE to confirm!", false); return; }
+        if (deleteConfirmText !== "DELETE" || !user) { toast("❌ Type DELETE to confirm!", false); return; }
         setDataLoading(true);
         try {
-            const cols = ["expenses", "income", "goals", "bills", "budgets", "emergency", "creditcards"];
-            for (let c = 0; c < cols.length; c++) {
-                const q = query(collection(db, cols[c]), where("userId", "==", user.uid));
-                const snap = await getDocs(q);
-                await Promise.all(snap.docs.map(function (d) { return deleteDoc(doc(db, cols[c], d.id)); }));
+            const userTables = ["expenses", "income", "goals", "bills", "emergency", "creditcards", "subscriptions", "networth"];
+            for (let c = 0; c < userTables.length; c++) {
+                await supabase.from(userTables[c]).delete().eq("user_id", user.id);
             }
+            await supabase.from("budgets").delete().eq("id", user.id);
+
+            if (refreshExpenses) refreshExpenses();
+            if (refreshIncomes) refreshIncomes();
+            if (refreshGoals) refreshGoals();
+            if (refreshBills) refreshBills();
+            if (refreshCards) refreshCards();
             toast("✅ All data cleared!"); setShowDeleteModal(false); setDeleteConfirmText("");
         } catch (err) { toast("❌ Failed: " + err.message, false); }
         setDataLoading(false);
@@ -975,7 +997,7 @@ const Settings = () => {
                 </motion.div>
 
                 {/* ── LOGOUT ── */}
-                <motion.button onClick={function () { signOut(auth); }} whileHover={{ scale: 1.02, boxShadow: "0 8px 20px rgba(239,68,68,0.3)" }} whileTap={{ scale: 0.97 }}
+                <motion.button onClick={async function () { await supabase.auth.signOut(); }} whileHover={{ scale: 1.02, boxShadow: "0 8px 20px rgba(239,68,68,0.3)" }} whileTap={{ scale: 0.97 }}
                     initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.26 }}
                     style={{ width: "100%", padding: 16, background: "#FEE2E2", color: "#EF4444", border: "2px solid #FCA5A5", borderRadius: 18, fontSize: 15, fontWeight: 700, cursor: "pointer", marginBottom: 32, fontFamily: "Poppins", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
                     🚪 Sign Out

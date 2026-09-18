@@ -1,224 +1,162 @@
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { collection, query, where, onSnapshot, addDoc, deleteDoc, doc } from "firebase/firestore";
-import { db } from "../firebase/firebase";
+import { motion, AnimatePresence } from "framer-motion";
+import { supabase } from "../supabase/supabase";
 import { useApp } from "../context/AppContext";
 import Navbar from "../components/Navbar";
 
 const Bills = () => {
-    // 1. GLOBAL CONTEXT STATE PROVIDERS
-    const { user, darkMode, currentLanguage } = useApp();
-
-    // 2. LOCAL STATE INITIALIZERS
+    const { user, darkMode } = useApp();
     const [bills, setBills] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [name, setName] = useState("");
     const [amount, setAmount] = useState("");
-    const [category, setCategory] = useState("Electricity");
     const [dueDate, setDueDate] = useState("");
+    const [category, setCategory] = useState("Utilities");
     const [loading, setLoading] = useState(false);
+    const [deleteConfirm, setDeleteConfirm] = useState(null);
 
-    // 3. SECURE, GRAMMATICALLY VERIFIED MULTILINGUAL LOCALIZATION DICTIONARY MATRIX
-    const bLabels = {
-        title: { English: "Bills & Reminders", "हिंदी": "बिल और अनुस्मारक", "తెలుగు": "బిల్లులు & రిమైండర్లు", "ಕನ್ನಡ": "ಬಿಲ್ಲುಗಳು ಮತ್ತು ಜ್ಞಾಪನೆಗಳು", "മലയാളം": "ബില്ലുകളും ഓർമ്മപ്പെടുത്തലുകളും" }[currentLanguage] || "Bills & Reminders",
-        totalMonthlyBills: { English: "Total Monthly Bills", "हिंदी": "कुल मासिक बिल", "తెలుగు": "మొత్తం నెలవారీ బిల్లులు", "ಕನ್ನಡ": "ಒಟ್ಟು ಮಾಸಿಕ ಬಿಲ್ಲುಗಳು", "മലയാളം": "ആകെ പ്രതിമാസ ബില്ലുകൾ" }[currentLanguage] || "Total Monthly Bills",
-        billsTracked: { English: "bills tracked", "हिंदी": "बिल ट्रैक किए गए", "తెలుగు": "బిల్లులు ట్రాక్ చేయబడ్డాయి", "ಕನ್ನಡ": "ಬಿಲ್ಲುಗಳನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಲಾಗಿದೆ" }[currentLanguage] || "bills tracked",
-        addBillBtn: { English: "➕ Add Bill", "हिंदी": "➕ बिल जोड़ें", "తెలుగు": "➕ బిల్లును చేర్చు", "ಕನ್ನಡ": "➕ ಬಿಲ್ಲು ಸೇರಿಸಿ", "മലയാളം": "➕ ബില്ല് ചേർക്കുക" }[currentLanguage] || "➕ Add Bill",
-        cancelBtn: { English: "✕ Cancel", "हिंदी": "✕ रद्द करें", "తెలుగు": "✕ రద్దు చేయి", "ಕನ್ನಡ": "✕ ರದ್ದುಗೊಳಿಸಿ", "മലയാളം": "✕ റദ്ദാക്കുക" }[currentLanguage] || "✕ Cancel",
-        newBillHeader: { English: "New Bill", "हिंदी": "नया बिल", "తెలుగు": "కొత్త బిల్లు", "ಕನ್ನಡ": "ಹೊಸ ಬಿಲ್ಲು", "മലയാളം": "പുതിയ ബില്ല്" }[currentLanguage] || "New Bill",
-        billNameLabel: { English: "Bill Name", "हिंदी": "बिल का नाम", "తెలుగు": "బిల్లు పేరు", "ಕನ್ನಡ": "ಬಿಲ್ಲು ಹೆಸರು", "മലയാളം": "ബില്ലിന്റെ പേര്" }[currentLanguage] || "Bill Name",
-        categoryLabel: { English: "Category", "हिंदी": "श्रेणी", "తెలుగు": "విభాగం", "ಕನ್ನಡ": "ವರ್ಗ", "മലയാളം": "വിഭാഗം" }[currentLanguage] || "Category",
-        amountLabel: { English: "Amount (₹)", "हिंदी": "राशि (₹)", "తెలుగు": "మొత్తం (₹)", "ಕನ್ನಡ": "ಮೊತ್ತ (₹)", "മലയാളം": "തുക (₹)" }[currentLanguage] || "Amount (₹)",
-        dueDateLabel: { English: "Due Date", "हिंदी": "नियत तारीख", "తెలుగు": "చెల్లించాల్సిన తేదీ", "ಕನ್ನಡ": "ಕೊನೆಯ ದಿನಾಂಕ", "മലയാളം": "അവസാന തീയതി" }[currentLanguage] || "Due Date",
-        saveBillBtn: { English: "Save Bill", "हिंदी": "बिल सहेजें", "తెలుగు": "బిల్లును సేవ్ చేయి", "ಕನ್ನಡ": "ಬಿಲ್ಲು ಉಳಿಸಿ", "മലയാളം": "ബില്ല് സേവ് ചെയ്യുക" }[currentLanguage] || "Save Bill",
-        savingStatus: { English: "Saving...", "हिंदी": "सहेज रहा हूँ...", "తెలుగు": "సేవ్ చేస్తోంది...", "ಕನ್ನಡ": "ಉಳಿಸಲಾಗುತ್ತಿದೆ...", "മലയാളം": "സേവ് ചെയ്യുന്നു..." }[currentLanguage] || "Saving...",
-        dueLabel: { English: "Due", "हिंदी": "नियत तिथि", "తెలుగు": "తేదీ", "ಕನ್ನಡ": "ದಿನಾಂಕ", "മലയാളം": "തീയതി" }[currentLanguage] || "Due",
-        dueToday: { English: "Due Today!", "हिंदी": "आज ही देय है!", "తెలుగు": "ఈరోజే ఆఖరి తేదీ!", "ಕನ್ನಡ": "ಇಂದೇ ಕೊನೆಯ ದಿನ!", "മലയാളം": "ഇന്ന് അവസാന തീയതി!" }[currentLanguage] || "Due Today!",
-        overdueBy: { English: "Overdue by", "हिंदी": "देरी अवधि", "తెలుగు": "గడువు ముగిసి", "ಕನ್ನಡ": "ಗಡುವು ಮೀರಿ", "മലയാളം": "അവസാന തീയതി കഴിഞ്ഞു" }[currentLanguage] || "Overdue by",
-        days: { English: "days", "हिंदी": "दिन", "తెలుగు": "రోజులు", "ಕನ್ನಡ": "ದಿನಗಳು", "മലയാളം": "ദിവസങ്ങൾ" }[currentLanguage] || "days",
-        daysLeft: { English: "days left", "हिंदी": "दिन शेष", "తెలుగు": "రోజులు మిగిలి ఉన్నాయి", "ಕನ್ನಡ": "ದಿನಗಳು ಬಾಕಿ ಇವೆ", "മലയാളം": "ദിവസങ്ങൾ ബാക്കി" }[currentLanguage] || "days left",
-        noBillsHeader: { English: "📅 No bills added yet!", "हिंदी": "📅 अभी कोई बिल नहीं जोड़ा गया!", "తెలుగు": "📅 బిల్లులు ఏవీ ఇంకా చేర్చలేదు!", "ಕನ್ನಡ": "📅 ಇನ್ನು ಯಾವುದೇ ಬಿಲ್ಲುಗಳನ್ನು ಸೇರಿಸಿಲ್ಲ!" }[currentLanguage] || "📅 No bills added yet!",
-        noBillsSub: { English: "Track your upcoming bills here", "हिंदी": "अपने आगामी बिलों को यहाँ ट्रैक करें", "తెలుగు": "మీ రాబోయే బిల్లుల వివరాలను ఇక్కడ ట్రాక్ చేయండి", "ಕನ್ನಡ": "ನಿಮ್ಮ ಮುಂಬರುವ ಬಿಲ್ಲುಗಳನ್ನು ಇಲ್ಲಿ ಟ್ರ್ಯಾಕ್ ಮಾಡಿ" }[currentLanguage] || "Track your upcoming bills here",
-        placeholderName: { English: "e.g. Electricity Bill", "हिंदी": "जैसे: बिजली का बिल", "తెలుగు": "ఉదా: కరెంట్ బిల్లు", "ಕನ್ನಡ": "ಉದಾ: ವಿದ್ಯುತ್ ಬಿಲ್ಲು" }[currentLanguage] || "e.g. Electricity Bill",
-        placeholderAmt: { English: "e.g. 1500", "हिंदी": "जैसे: 1500", "తెలుగు": "ఉదా: 1500", "ಕನ್ನಡ": "ಉದಾ: 1500" }[currentLanguage] || "e.g. 1500"
-    };
+    const CATEGORIES = ["Utilities", "Rent", "Insurance", "Subscription", "EMI", "Other"];
 
-    // CORE MASTER CATEGORIES TRANSLATION BLUEPRINTS MAP
-    const BILL_CATEGORIES = [
-        { value: "Electricity", name: { English: "Electricity", "हिंदी": "बिजली", "తెలుగు": "విద్యుత్", "ಕನ್ನಡ": "ವಿದ್ಯುತ್" }[currentLanguage] || "Electricity", icon: "💡" },
-        { value: "Water", name: { English: "Water", "हिंदी": "पानी", "తెలుగు": "నీరు", "ಕನ್ನಡ": "ನೀರು" }[currentLanguage] || "Water", icon: "💧" },
-        { value: "Internet", name: { English: "Internet", "हिंदी": "इंटरनेट", "తెలుగు": "ఇంటర్నెట్", "ಕನ್ನಡ": "ಅಂತರ್ಜಾಲ" }[currentLanguage] || "Internet", icon: "🌐" },
-        { value: "Mobile", name: { English: "Mobile", "हिंदी": "मोबाइल", "తెలుగు": "మొబైల్", "ಕನ್ನಡ": "ಮೊಬೈಲ್" }[currentLanguage] || "Mobile", icon: "📱" },
-        { value: "Rent", name: { English: "Rent", "हिंदी": "किराया", "తెలుగు": "అద్దె", "ಕನ್ನಡ": "ಬಾಡಿಗೆ" }[currentLanguage] || "Rent", icon: "🏠" },
-        { value: "Insurance", name: { English: "Insurance", "हिंदी": "बीमा", "తెలుగు": "భీమా", "ಕನ್ನಡ": "ವಿಮೆ" }[currentLanguage] || "Insurance", icon: "🛡️" },
-        { value: "OTT", name: { English: "OTT", "हिंदी": "ओटीटी", "తెలుగు": "OTT సబ్‌స్క్రిప్షన్", "ಕನ್ನಡ": "OTT ಚಂದಾದಾರಿಕೆ" }[currentLanguage] || "OTT", icon: "📺" },
-        { value: "Other", name: { English: "Other", "हिंदी": "अन्य", "తెలుగు": "ఇతరాలు", "ಕನ್ನಡ": "ಇತರೆ" }[currentLanguage] || "Other", icon: "📋" },
-    ];
-
-    const translateCategory = (catValue) => {
-        const found = BILL_CATEGORIES.find(c => c.value === catValue);
-        return found ? found.name : catValue;
-    };
-
-    // 4. FIREBASE TELEMETRY EFFECT SNAPSHOT SYNCS
-    useEffect(() => {
+    const fetchBills = async () => {
         if (!user) return;
-        const q = query(collection(db, "bills"), where("userId", "==", user.uid));
-        return onSnapshot(q, snap => setBills(snap.docs.map(d => ({ id: d.id, ...d.data() }))));
-    }, [user]);
+        const { data } = await supabase.from("bills").select("*").eq("user_id", user.id).order("due_date", { ascending: true });
+        if (data) setBills(data);
+    };
 
-    // 5. DATA INSERTS & MUTATORS DISPATCH HANDLERS
-    const handleAdd = async (e) => {
+    useEffect(() => { fetchBills(); }, [user]);
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!name || !amount || !dueDate) return;
+        if (!name || !amount) return;
         setLoading(true);
-        try {
-            await addDoc(collection(db, "bills"), {
-                userId: user.uid,
-                name,
-                amount: Number(amount),
-                category,
-                dueDate,
-                createdAt: new Date().toISOString(),
-            });
-            setName(""); setAmount(""); setDueDate("");
-            setShowForm(false);
-        } catch (err) {
-            console.error("Error creating document inside bills telemetry:", err);
-        }
+        await supabase.from("bills").insert({ user_id: user.id, name, amount: Number(amount), due_date: dueDate, category, is_paid: false, created_at: new Date().toISOString() });
+        await fetchBills();
+        setName(""); setAmount(""); setDueDate(""); setCategory("Utilities"); setShowForm(false);
         setLoading(false);
     };
 
+    const togglePaid = async (bill) => {
+        await supabase.from("bills").update({ is_paid: !bill.is_paid }).eq("id", bill.id);
+        await fetchBills();
+    };
+
     const handleDelete = async (id) => {
-        try {
-            await deleteDoc(doc(db, "bills", id));
-        } catch (err) {
-            console.error("Error removing entry document from bills ledger:", err);
-        }
+        await supabase.from("bills").delete().eq("id", id);
+        await fetchBills();
+        setDeleteConfirm(null);
     };
 
-    const getDaysLeft = (dueDateString) => {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const due = new Date(dueDateString);
-        due.setHours(0, 0, 0, 0);
-        const diffTime = due - today;
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        return diffDays;
+    const getDaysUntil = (dateStr) => {
+        if (!dateStr) return null;
+        const diff = Math.ceil((new Date(dateStr) - new Date()) / (1000 * 60 * 60 * 24));
+        return diff;
     };
 
-    const formatLocalizedDate = (dateString) => {
-        const dateObj = new Date(dateString);
-        const localeCodes = { English: "en-IN", "हिंदी": "hi-IN", "తెలుగు": "te-IN", "ಕನ್ನಡ": "kn-IN", "മലയാളം": "ml-IN", "मराठी": "mr-IN", "ગુજરાતી": "gu-IN", "தமிழ்": "ta-IN" };
-        const activeLocale = localeCodes[currentLanguage] || "en-IN";
-        return dateObj.toLocaleDateString(activeLocale, { day: "numeric", month: "short", year: "numeric" });
-    };
-
-    const sortedBills = [...bills].sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
-    const totalBills = bills.reduce((sum, b) => sum + Number(b.amount), 0);
+    const unpaid = bills.filter(b => !b.is_paid);
+    const paid = bills.filter(b => b.is_paid);
+    const totalDue = unpaid.reduce((s, b) => s + Number(b.amount), 0);
 
     return (
-        <div className={`bills-page ${darkMode ? "dark-mode" : ""}`}>
-            <Navbar title={bLabels.title} />
+        <div className={darkMode ? "dark-mode" : ""}>
+            <Navbar title="Bills" />
             <div className="page-container">
-
-                {/* CRITICAL SPACE BUFFER: Corrects vertical line-height offsets for complex scripts */}
-                <style>{`
-                    .card h3, .card p, .btn-primary, label, option { font-family: 'Poppins', sans-serif !important; line-height: 1.6 !important; }
-                    input, select { font-family: 'Poppins', sans-serif !important; padding: 12px; border-radius: 10px; width: 100%; box-sizing: border-box; }
-                `}</style>
-
-                {/* Monthly Bills Master Aggregate Card */}
-                <motion.div className="card" style={{ background: "var(--gradient)", color: "white", textAlign: "center", padding: "24px" }}
+                <motion.div className="card" style={{ background: "var(--gradient)", color: "white", textAlign: "center", padding: "20px", marginBottom: 16 }}
                     initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-                    <p style={{ opacity: 0.9, marginBottom: 8, marginTop: 0, fontSize: "14px", fontWeight: 500 }}>{bLabels.totalMonthlyBills}</p>
-                    <h2 style={{ fontSize: 32, fontWeight: 800, margin: "0 0 6px 0" }}>₹{totalBills.toLocaleString("en-IN")}</h2>
-                    <p style={{ opacity: 0.8, fontSize: 13, margin: 0 }}>{bills.length} {bLabels.billsTracked}</p>
+                    <p style={{ opacity: 0.9, margin: "0 0 6px", fontSize: 13 }}>Total Due</p>
+                    <h2 style={{ fontSize: 30, fontWeight: 800, margin: 0 }}>₹{totalDue.toLocaleString("en-IN")}</h2>
+                    <p style={{ opacity: 0.8, margin: "6px 0 0", fontSize: 12 }}>{unpaid.length} unpaid bills</p>
                 </motion.div>
 
-                {/* Form Expansion Toggle Switcher Action Button */}
-                <motion.button className="btn-primary" style={{ marginBottom: 16, marginTop: 16, width: "100%", padding: "14px", borderRadius: "12px", fontWeight: 600, fontSize: "14px" }}
-                    onClick={() => setShowForm(!showForm)} whileTap={{ scale: 0.95 }}>
-                    {showForm ? bLabels.cancelBtn : bLabels.addBillBtn}
+                <motion.button onClick={() => setShowForm(!showForm)} whileTap={{ scale: 0.97 }} className="btn-primary"
+                    style={{ width: "100%", padding: 13, borderRadius: 14, fontSize: 14, fontWeight: 600, marginBottom: 16 }}>
+                    {showForm ? "✕ Cancel" : "➕ Add Bill"}
                 </motion.button>
 
-                {/* New Log Registration Form Box Canvas */}
-                {showForm && (
-                    <motion.div className="card" initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ marginBottom: 16 }}>
-                        <h3 style={{ fontWeight: 600, marginBottom: 16, marginTop: 0, color: "var(--text-primary)", fontSize: "16px" }}>{bLabels.newBillHeader}</h3>
-                        <form onSubmit={handleAdd}>
-                            <div style={{ marginBottom: 12 }}>
-                                <label style={{ fontSize: 13, color: "var(--text-secondary)", display: "block", marginBottom: 8 }}>{bLabels.billNameLabel}</label>
-                                <input type="text" placeholder={bLabels.placeholderName} value={name} onChange={e => setName(e.target.value)} required style={{ border: "1px solid var(--border)", background: "var(--background)", color: "var(--text-primary)" }} />
-                            </div>
-                            <div style={{ marginBottom: 12 }}>
-                                <label style={{ fontSize: 13, color: "var(--text-secondary)", display: "block", marginBottom: 8 }}>{bLabels.categoryLabel}</label>
-                                <select value={category} onChange={e => setCategory(e.target.value)} style={{ border: "1px solid var(--border)", background: "var(--background)", color: "var(--text-primary)" }}>
-                                    {BILL_CATEGORIES.map(c => <option key={c.value} value={c.value}>{c.icon} {c.name}</option>)}
-                                </select>
-                            </div>
-                            <div style={{ marginBottom: 12 }}>
-                                <label style={{ fontSize: 13, color: "var(--text-secondary)", display: "block", marginBottom: 8 }}>{bLabels.amountLabel}</label>
-                                <input type="number" placeholder={bLabels.placeholderAmt} value={amount} onChange={e => setAmount(e.target.value)} required style={{ border: "1px solid var(--border)", background: "var(--background)", color: "var(--text-primary)" }} />
-                            </div>
-                            <div style={{ marginBottom: 20 }}>
-                                <label style={{ fontSize: 13, color: "var(--text-secondary)", display: "block", marginBottom: 8 }}>{bLabels.dueDateLabel}</label>
-                                <input type="date" value={dueDate} onChange={e => setDueDate(e.target.value)} required style={{ border: "1px solid var(--border)", background: "var(--background)", color: "var(--text-primary)" }} />
-                            </div>
-                            <button type="submit" className="btn-primary" disabled={loading} style={{ width: "100%", padding: "14px", borderRadius: "12px", fontWeight: 600, fontSize: "14px", cursor: loading ? "not-allowed" : "pointer" }}>
-                                {loading ? bLabels.savingStatus : bLabels.saveBillBtn}
-                            </button>
-                        </form>
-                    </motion.div>
-                )}
-
-                {/* Chronological Active Tracked Items Mapping Iterations Grid */}
-                {sortedBills.map((bill, index) => {
-                    const daysLeft = getDaysLeft(bill.dueDate);
-                    const isOverdue = daysLeft < 0;
-                    const isUrgent = daysLeft === 0 || (daysLeft > 0 && daysLeft <= 3);
-
-                    return (
-                        <motion.div key={bill.id} className="card"
-                            initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: index * 0.04 }}
-                            style={{ borderLeft: `4px solid ${isOverdue ? "#EF4444" : isUrgent ? "#F59E0B" : "#10B981"}`, marginBottom: 12, padding: "16px" }}>
-                            <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-                                <span style={{ fontSize: 26, width: "36px", height: "36px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                                    {BILL_CATEGORIES.find(c => c.value === bill.category)?.icon || "📋"}
-                                </span>
-                                <div style={{ flex: 1, minWidth: 0 }}>
-                                    <p style={{ fontWeight: 600, color: "var(--text-primary)", margin: "0 0 4px 0", fontSize: "14.5px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{bill.name}</p>
-                                    <p style={{ fontSize: 12, color: "var(--text-secondary)", margin: "0 0 4px 0" }}>{bLabels.dueLabel}: {formatLocalizedDate(bill.dueDate)}</p>
-                                    <p style={{ fontSize: 12, fontWeight: 700, color: isOverdue ? "#EF4444" : isUrgent ? "#F59E0B" : "#10B981", margin: 0 }}>
-                                        {isOverdue
-                                            ? `${bLabels.overdueBy} ${Math.abs(daysLeft)} ${bLabels.days}`
-                                            : daysLeft === 0
-                                                ? bLabels.dueToday
-                                                : `${daysLeft} ${bLabels.daysLeft}`
-                                        }
-                                    </p>
+                <AnimatePresence>
+                    {showForm && (
+                        <motion.div className="card" initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} style={{ marginBottom: 16 }}>
+                            <form onSubmit={handleSubmit}>
+                                {[{ label: "Bill Name", type: "text", val: name, set: setName, ph: "e.g. Electricity" },
+                                { label: "Amount (₹)", type: "number", val: amount, set: setAmount, ph: "Enter amount" }].map(f => (
+                                    <div key={f.label} style={{ marginBottom: 12 }}>
+                                        <label style={{ fontSize: 12, color: "var(--text-secondary)", display: "block", marginBottom: 6, fontWeight: 600 }}>{f.label}</label>
+                                        <input type={f.type} placeholder={f.ph} value={f.val} onChange={e => f.set(e.target.value)} required
+                                            style={{ width: "100%", padding: "11px 14px", borderRadius: 10, border: "1px solid var(--border)", background: "var(--background)", color: "var(--text-primary)", fontFamily: "Poppins", fontSize: 14, outline: "none", boxSizing: "border-box" }} />
+                                    </div>
+                                ))}
+                                <div style={{ marginBottom: 12 }}>
+                                    <label style={{ fontSize: 12, color: "var(--text-secondary)", display: "block", marginBottom: 6, fontWeight: 600 }}>Category</label>
+                                    <select value={category} onChange={e => setCategory(e.target.value)}
+                                        style={{ width: "100%", padding: "11px 14px", borderRadius: 10, border: "1px solid var(--border)", background: "var(--background)", color: "var(--text-primary)", fontFamily: "Poppins", fontSize: 14, outline: "none", boxSizing: "border-box" }}>
+                                        {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                                    </select>
                                 </div>
-                                <div style={{ textAlign: "right", flexShrink: 0 }}>
-                                    <p style={{ fontWeight: 700, color: "var(--text-primary)", fontSize: 15, margin: "0 0 6px 0" }}>₹{Number(bill.amount).toLocaleString("en-IN")}</p>
-                                    <button type="button" onClick={() => handleDelete(bill.id)}
-                                        style={{ background: darkMode ? "rgba(239, 68, 68, 0.12)" : "#FEE2E2", border: "none", borderRadius: 8, padding: "6px 10px", cursor: "pointer", transition: "all 0.2s" }}>🗑️</button>
+                                <div style={{ marginBottom: 16 }}>
+                                    <label style={{ fontSize: 12, color: "var(--text-secondary)", display: "block", marginBottom: 6, fontWeight: 600 }}>Due Date</label>
+                                    <input type="date" value={dueDate} onChange={e => setDueDate(e.target.value)}
+                                        style={{ width: "100%", padding: "11px 14px", borderRadius: 10, border: "1px solid var(--border)", background: "var(--background)", color: "var(--text-primary)", fontFamily: "Poppins", fontSize: 14, outline: "none", boxSizing: "border-box" }} />
                                 </div>
-                            </div>
+                                <button type="submit" className="btn-primary" disabled={loading} style={{ width: "100%", padding: 13, borderRadius: 12, fontSize: 14, fontWeight: 600 }}>
+                                    {loading ? "Saving..." : "💾 Save Bill"}
+                                </button>
+                            </form>
                         </motion.div>
-                    );
-                })}
+                    )}
+                </AnimatePresence>
 
-                {/* Empty State Presentation Layout Block Fallback */}
-                {bills.length === 0 && (
-                    <div className="empty-state card" style={{ textAlign: "center", padding: "36px 20px" }}>
-                        <p style={{ margin: "0 0 4px 0", fontWeight: 600, color: "var(--text-secondary)", fontSize: "14px" }}>{bLabels.noBillsHeader}</p>
-                        <p style={{ margin: 0, fontSize: "12.5px", color: "var(--text-secondary)", opacity: 0.85 }}>{bLabels.noBillsSub}</p>
+                {bills.length === 0 ? (
+                    <div style={{ textAlign: "center", padding: "40px 20px" }}>
+                        <p style={{ fontSize: 40, margin: "0 0 12px" }}>📅</p>
+                        <p style={{ color: "var(--text-secondary)", fontSize: 14 }}>No bills added yet!</p>
                     </div>
+                ) : (
+                    [...unpaid, ...paid].map((bill, i) => {
+                        const days = getDaysUntil(bill.due_date);
+                        const urgent = days !== null && days <= 3 && !bill.is_paid;
+                        return (
+                            <motion.div key={bill.id} className="card" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}
+                                style={{ marginBottom: 10, padding: "14px 16px", opacity: bill.is_paid ? 0.6 : 1, border: urgent ? "1px solid #FCA5A5" : "1px solid var(--border)" }}>
+                                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                                    <motion.div onClick={() => togglePaid(bill)} whileTap={{ scale: 0.9 }}
+                                        style={{ width: 24, height: 24, borderRadius: "50%", border: `2px solid ${bill.is_paid ? "#10B981" : "var(--border)"}`, background: bill.is_paid ? "#10B981" : "transparent", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0, color: "white", fontSize: 12, fontWeight: 800 }}>
+                                        {bill.is_paid ? "✓" : ""}
+                                    </motion.div>
+                                    <div style={{ flex: 1, minWidth: 0 }}>
+                                        <p style={{ fontWeight: 600, fontSize: 14, margin: "0 0 2px", color: "var(--text-primary)", textDecoration: bill.is_paid ? "line-through" : "none" }}>{bill.name}</p>
+                                        <p style={{ fontSize: 11, color: urgent ? "#EF4444" : "var(--text-secondary)", margin: 0 }}>
+                                            {bill.category} {days !== null ? `• Due in ${days}d` : ""}
+                                            {urgent && " ⚠️"}
+                                        </p>
+                                    </div>
+                                    <p style={{ fontWeight: 700, color: bill.is_paid ? "#10B981" : "#EF4444", margin: 0, fontSize: 14, flexShrink: 0 }}>₹{Number(bill.amount).toLocaleString("en-IN")}</p>
+                                    <button onClick={() => setDeleteConfirm(bill.id)} style={{ background: "#FEE2E2", border: "none", borderRadius: 8, padding: "6px 10px", cursor: "pointer", fontSize: 14, flexShrink: 0 }}>🗑️</button>
+                                </div>
+                            </motion.div>
+                        );
+                    })
                 )}
 
+                <AnimatePresence>
+                    {deleteConfirm && (
+                        <>
+                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setDeleteConfirm(null)}
+                                style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", backdropFilter: "blur(6px)", zIndex: 9998 }} />
+                            <div style={{ position: "fixed", inset: 0, zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", padding: "0 20px" }}>
+                                <motion.div initial={{ opacity: 0, scale: 0.88 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.88 }}
+                                    style={{ background: "var(--card-bg)", borderRadius: 20, padding: 28, width: "100%", maxWidth: 360, boxShadow: "0 20px 60px rgba(0,0,0,0.3)" }}>
+                                    <p style={{ fontSize: 40, textAlign: "center", margin: "0 0 12px" }}>🗑️</p>
+                                    <h3 style={{ textAlign: "center", color: "#EF4444", margin: "0 0 20px", fontFamily: "Poppins" }}>Delete Bill?</h3>
+                                    <div style={{ display: "flex", gap: 10 }}>
+                                        <button onClick={() => setDeleteConfirm(null)} style={{ flex: 1, padding: 12, border: "1px solid var(--border)", borderRadius: 10, background: "transparent", color: "var(--text-secondary)", fontFamily: "Poppins", fontWeight: 600, cursor: "pointer" }}>Cancel</button>
+                                        <button onClick={() => handleDelete(deleteConfirm)} style={{ flex: 1, padding: 12, border: "none", borderRadius: 10, background: "#EF4444", color: "white", fontFamily: "Poppins", fontWeight: 600, cursor: "pointer" }}>Delete</button>
+                                    </div>
+                                </motion.div>
+                            </div>
+                        </>
+                    )}
+                </AnimatePresence>
             </div>
         </div>
     );
 };
-
 export default Bills;

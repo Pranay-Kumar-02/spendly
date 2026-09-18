@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { collection, addDoc, doc, setDoc } from "firebase/firestore";
-import { db } from "../firebase/firebase";
+import { supabase } from "../supabase/supabase";
 import { useApp } from "../context/AppContext";
 import Navbar from "../components/Navbar";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
@@ -11,7 +10,7 @@ const COLORS = ["#7C3AED", "#EC4899", "#10B981", "#F59E0B", "#3B82F6", "#EF4444"
 
 const Home = () => {
     // 1. GLOBAL CONTEXT STATE PROVIDERS
-    const { user, darkMode, displayName, expenses, incomes, budget, setBudget, currentLanguage } = useApp();
+    const { user, darkMode, displayName, expenses, incomes, budget, setBudget, currentLanguage, refreshExpenses, refreshIncomes, refreshBudget } = useApp();
 
     // 2. STATE VARIABLE INITIALIZERS
     const [greeting, setGreeting] = useState("");
@@ -194,19 +193,22 @@ MANDATORY LANGUAGE RULE: You MUST output your full tip sentence inside the exact
     // 6. DB INSERTS & ACTION MUTATOR HANDLERS
     const handleQuickAddSubmit = async (e) => {
         e.preventDefault();
-        if (!quickAmount) return;
+        if (!quickAmount || !user) return;
         setLoading(true);
         try {
             const targetPath = quickAddTab === "expense" ? "expenses" : "income";
             const payload = {
-                userId: user.uid, amount: Number(quickAmount),
+                user_id: user.id, amount: Number(quickAmount),
                 description: quickDescription, date: new Date(date).toISOString(),
                 createdAt: new Date().toISOString()
             };
             if (quickAddTab === "expense") payload.category = quickCategory;
             else payload.type = quickCategory;
 
-            await addDoc(collection(db, targetPath), payload);
+            await supabase.from(targetPath).insert(payload);
+            if (quickAddTab === "expense" && refreshExpenses) refreshExpenses();
+            if (quickAddTab === "income" && refreshIncomes) refreshIncomes();
+
             setQuickAmount(""); setQuickDescription(""); setShowQuickAdd(false);
         } catch (err) { console.error(err); }
         setLoading(false);
@@ -214,11 +216,12 @@ MANDATORY LANGUAGE RULE: You MUST output your full tip sentence inside the exact
 
     const handleUpdateBudget = async (e) => {
         e.preventDefault();
-        if (!budgetAmount) return;
+        if (!budgetAmount || !user) return;
         setLoading(true);
         try {
-            await setDoc(doc(db, "budgets", user.uid), { totalBudget: Number(budgetAmount) }, { merge: true });
+            await supabase.from("budgets").upsert({ id: user.id, total_budget: Number(budgetAmount) });
             setBudget(Number(budgetAmount)); setBudgetAmount(""); setShowBudgetForm(false);
+            if (refreshBudget) refreshBudget();
         } catch (err) { console.error(err); }
         setLoading(false);
     };

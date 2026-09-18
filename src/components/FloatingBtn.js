@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { collection, query, where, onSnapshot, doc, getDoc } from "firebase/firestore";
-import { db } from "../firebase/firebase";
+import { supabase } from "../supabase/supabase";
 import { useApp } from "../context/AppContext";
 
 const OPENROUTER_API_KEY = process.env.REACT_APP_OPENROUTER_API_KEY;
@@ -17,7 +16,7 @@ const FormattedMessage = ({ content }) => {
                     const parts = text.split(/\*\*(.*?)\*\*/g);
                     return parts.map((part, j) => j % 2 === 1 ? <strong key={j} style={{ fontWeight: 700, color: "inherit" }}>{part}</strong> : part);
                 };
-                if (line.trim().match(/^[\*\-•]\s/)) {
+                if (line.trim().match(/^[*•-]\s/)) {
                     const text = line.trim().slice(2);
                     return (
                         <div key={i} style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
@@ -167,45 +166,40 @@ const FloatingAI = () => {
     useEffect(() => {
         if (!user) return;
 
-        const expQuery = query(collection(db, "expenses"), where("userId", "==", user.uid));
-        const incQuery = query(collection(db, "income"), where("userId", "==", user.uid));
-        const cardQuery = query(collection(db, "creditcards"), where("userId", "==", user.uid));
-        const goalsQuery = query(collection(db, "goals"), where("userId", "==", user.uid));
-        const billsQuery = query(collection(db, "bills"), where("userId", "==", user.uid));
-
-        const unsub1 = onSnapshot(expQuery, snap => setExpenses(snap.docs.map(d => ({ id: d.id, ...d.data() }))));
-        const unsub2 = onSnapshot(incQuery, snap => setIncomes(snap.docs.map(d => ({ id: d.id, ...d.data() }))));
-        const unsubCards = onSnapshot(cardQuery, snap => setCards(snap.docs.map(d => ({ id: d.id, ...d.data() }))));
-        const unsubGoals = onSnapshot(goalsQuery, snap => setGoals(snap.docs.map(d => ({ id: d.id, ...d.data() }))));
-        const unsubBills = onSnapshot(billsQuery, snap => setBills(snap.docs.map(d => ({ id: d.id, ...d.data() }))));
-
-        // Real-time listener for profile picture updates
-        const unsubSettings = onSnapshot(doc(db, "settings", user.uid), snap => {
-            if (snap.exists()) {
-                const data = snap.data();
-                if (data.photoURL || data.profilePic) {
-                    setProfilePic(data.photoURL || data.profilePic);
-                } else {
-                    setProfilePic(null);
-                }
-            }
-        });
-
-        const fetchStaticSettings = async () => {
+        const fetchAllData = async () => {
             try {
-                const bSnap = await getDoc(doc(db, "budgets", user.uid));
-                if (bSnap.exists() && bSnap.data().totalBudget) setBudget(bSnap.data().totalBudget);
+                const { data: exp } = await supabase.from("expenses").select("*").eq("user_id", user.id).order("date", { ascending: false });
+                if (exp) setExpenses(exp);
 
-                const eSnap = await getDoc(doc(db, "emergency", user.uid));
-                if (eSnap.exists()) setEmergencyData(eSnap.data());
-            } catch (err) { console.error(err); }
+                const { data: inc } = await supabase.from("income").select("*").eq("user_id", user.id).order("date", { ascending: false });
+                if (inc) setIncomes(inc);
+
+                const { data: cds } = await supabase.from("creditcards").select("*").eq("user_id", user.id);
+                if (cds) setCards(cds);
+
+                const { data: gls } = await supabase.from("goals").select("*").eq("user_id", user.id);
+                if (gls) setGoals(gls);
+
+                const { data: bls } = await supabase.from("bills").select("*").eq("user_id", user.id);
+                if (bls) setBills(bls);
+
+                const { data: bgt } = await supabase.from("budgets").select("*").eq("id", user.id).maybeSingle();
+                if (bgt && (bgt.total_budget || bgt.totalBudget)) setBudget(bgt.total_budget || bgt.totalBudget);
+
+                const { data: emg } = await supabase.from("emergency").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(1).maybeSingle();
+                if (emg) setEmergencyData(emg);
+
+                const { data: sett } = await supabase.from("settings").select("*").eq("id", user.id).maybeSingle();
+                if (sett) {
+                    const pic = sett.profile_pic || sett.profilePic;
+                    if (pic) setProfilePic(pic);
+                }
+            } catch (err) {
+                console.error("FloatingAI data fetch error:", err);
+            }
         };
 
-        fetchStaticSettings();
-
-        return () => {
-            unsub1(); unsub2(); unsubCards(); unsubGoals(); unsubBills(); unsubSettings();
-        };
+        fetchAllData();
     }, [user]);
 
     useEffect(() => {

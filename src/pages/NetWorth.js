@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import { db } from "../firebase/firebase";
+import { supabase } from "../supabase/supabase";
 import { useApp } from "../context/AppContext";
 import Navbar from "../components/Navbar";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts";
@@ -53,15 +52,23 @@ const NetWorth = () => {
         { key: "other_liabilities", label: { English: "Other Liabilities", "हिंदी": "अन्य देनदारियां", "తెలుగు": "ఇతర అప్పులు", "ಕನ್ನಡ": "ಇತರ ಬಾಧ್ಯತೆಗಳು" }[currentLanguage] || "Other Liabilities", icon: "📋" },
     ];
 
-    // 4. FIREBASE INITIAL TELEMETRY FETCH
+    // 4. SUPABASE INITIAL TELEMETRY FETCH
     useEffect(() => {
         if (!user) return;
         const fetchNetWorthData = async () => {
             try {
-                const snap = await getDoc(doc(db, "networth", user.uid));
-                if (snap.exists()) {
-                    setAssets(snap.data().assets || {});
-                    setLiabilities(snap.data().liabilities || {});
+                const { data: nwData, error } = await supabase
+                    .from("networth")
+                    .select("*")
+                    .eq("user_id", user.id)
+                    .maybeSingle();
+                if (error) {
+                    console.error("Error fetching Net Worth logs:", error);
+                    return;
+                }
+                if (nwData) {
+                    setAssets(nwData.assets || {});
+                    setLiabilities(nwData.liabilities || {});
                     setSaved(true);
                 }
             } catch (err) {
@@ -76,11 +83,31 @@ const NetWorth = () => {
         if (!user) return;
         setLoading(true);
         try {
-            await setDoc(doc(db, "networth", user.uid), {
-                assets,
-                liabilities,
-                updatedAt: new Date().toISOString()
-            });
+            const { data: existing } = await supabase
+                .from("networth")
+                .select("id")
+                .eq("user_id", user.id)
+                .maybeSingle();
+
+            if (existing?.id) {
+                await supabase
+                    .from("networth")
+                    .update({
+                        assets,
+                        liabilities,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq("id", existing.id);
+            } else {
+                await supabase
+                    .from("networth")
+                    .insert({
+                        user_id: user.id,
+                        assets,
+                        liabilities,
+                        updated_at: new Date().toISOString()
+                    });
+            }
             setSaved(true);
         } catch (err) {
             console.error("Error committing Net Worth data:", err);

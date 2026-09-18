@@ -4,11 +4,11 @@
   "private": true,
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
+    "@supabase/supabase-js": "^2.112.3",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^13.5.0",
-    "firebase": "^12.13.0",
     "framer-motion": "^12.39.0",
     "i18next": "^23.16.8",
     "jspdf": "^4.2.1",
