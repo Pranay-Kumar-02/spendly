@@ -16,7 +16,224 @@ The platform is designed for students, working professionals, families, and anyo
 
 ---
 
+# 🌟 What Makes Spendly Different?
+
+Most finance applications focus only on recording transactions.
+
+Spendly goes beyond simple expense tracking and acts as an intelligent financial companion.
+
+### Traditional Finance Apps
+
+* ❌ Manual tracking only
+* ❌ No intelligent recommendations
+* ❌ Generic user experience
+* ❌ Limited personalization
+* ❌ No financial reasoning
+
+### Spendly
+
+* ✅ AI-powered financial assistance
+* ✅ Personalized financial insights
+* ✅ Context-aware AI conversations
+* ✅ Built-in financial calculators
+* ✅ Goal-oriented financial planning
+* ✅ Multi-language support
+* ✅ Modern UI & UX
+* ✅ Interactive analytics dashboard
+* ✅ Intelligent money management experience
+
+---
+
 # ✨ Core Features
+
+A visual walkthrough of Spendly's core features, user experience, and AI-powered financial management capabilities.
+
+## 🔐 Secure Authentication
+
+Simple and secure user authentication powered by Firebase Authentication.
+
+Features:
+- User Registration
+- Secure Login
+- Protected User Data
+- Personalized User Experience
+
+![Authentication](screenshots/authentication.jpeg)
+
+---
+
+## 🏠 Dashboard Overview
+
+A centralized dashboard providing a complete overview of financial activity, spending, budgets, goals, and insights.
+
+Features:
+- Financial Summary
+- Account Overview
+- Quick Navigation
+- Real-Time Updates
+
+![Dashboard](screenshots/dashboard.jpeg)
+
+---
+
+## 🤖 AI Financial Advisor
+
+An AI-powered financial assistant designed to help users make smarter financial decisions.
+
+Features:
+- Personalized Financial Guidance
+- Spending Recommendations
+- Budget Optimization
+- Savings Suggestions
+- Financial Planning Assistance
+
+![AI Advisor](screenshots/ai_advisor.jpeg)
+
+---
+## 🧠 AI Memory System
+
+Spendly's AI assistant remembers previous context to provide more meaningful and personalized interactions.
+
+### Benefits
+
+* Context-aware responses
+* Personalized recommendations
+* Better user experience
+* Smarter financial assistance
+* Continuous financial guidance
+
+---
+
+## 💬 Intelligent AI Conversations
+
+Interact naturally with Spendly's AI assistant through a modern conversational interface.
+
+Features:
+- Context-Aware Responses
+- Financial Queries & Advice
+- Smart Recommendations
+- Personalized Assistance
+
+![AI Chatbot](screenshots/ai_chatbot.jpeg)
+
+### AI Conversation Example
+
+![AI Conversation](screenshots/chat_ai_advisor.jpeg)
+
+---
+
+## 📊 Analytics & Financial Reports
+
+Gain deeper insights into spending habits through visual reports and analytics.
+Visualize your financial health through interactive analytics.
+
+Features:
+- Expense Breakdown
+- Spending Trends
+- Category Analysis
+- Financial Reports
+- Interactive Visualizations
+- Category-wise spending breakdown
+
+### Built With
+
+* Recharts
+* Dynamic Data Visualization
+
+![Reports](screenshots/reports.jpeg)
+
+---
+
+## ⚡ Quick Add Transactions
+
+Designed for speed and convenience, allowing users to record transactions instantly.
+
+Features:
+- Fast Expense Entry
+- Quick Income Logging
+- Simplified Workflow
+- Improved Productivity
+
+![Quick Add](screenshots/quick_add.jpeg)
+
+---
+
+## 🌍 Multi-Language Support
+
+Spendly supports multiple languages, making financial management more accessible and inclusive.
+
+Features:
+- Enhanced Accessibility
+- Localized Experience
+- User-Friendly Interface
+- Broader Reach
+
+![Languages](screenshots/languages.jpeg)
+
+---
+
+## 🎨 Themes & Personalization
+
+Customize the application according to individual preferences.
+
+Features:
+- Light Theme
+- Dark Theme
+- Personalized Experience
+- Modern UI Design
+
+### Theme Selection
+
+![Themes](screenshots/themes.jpeg)
+
+### Dashboard Theme Preview
+
+![Theme Dashboard](screenshots/themes_dashboard.jpeg)
+
+---
+
+## ⚙️ Settings & Customization
+
+Manage application preferences and personalize the overall experience.
+
+Features:
+- Profile Management
+- Theme Selection
+- Language Preferences
+- User Customization
+
+![Settings](screenshots/settings.jpeg)
+
+---
+
+## 📱 Fully Responsive Design
+
+Built to provide a seamless experience across all devices.
+
+Supported Devices:
+- Desktop
+- Laptop
+- Tablet
+- Mobile
+
+![Responsive Design](screenshots/responsive.jpeg)
+
+---
+
+## ✨ Additional Features
+
+Spendly includes several additional tools designed to improve financial management and usability.
+
+Features:
+- Goal Tracking
+- Bill Reminders
+- Credit Card Tracking
+- Financial Calculators
+- Smart Financial Insights
+
+![Additional Features](screenshots/more_features.jpeg)
+
+---
 
 ## 💰 Expense Tracking
 
@@ -48,72 +265,11 @@ Create budgets and stay financially disciplined.
 
 ---
 
-## 📊 Financial Analytics Dashboard
-
-Visualize your financial health through interactive analytics.
-
-### Features
-
-* Income vs Expense analysis
-* Category-wise spending breakdown
-* Monthly financial trends
-* Interactive charts
-* Financial summaries
-* Real-time analytics
-
-### Built With
-
-* Recharts
-* Dynamic Data Visualization
-
----
-
-## 🤖 AI Financial Advisor
-
-Spendly includes an AI-powered assistant that helps users make informed financial decisions.
-
-### AI Capabilities
-
-* Personalized financial guidance
-* Budgeting recommendations
-* Saving suggestions
-* Spending analysis
-* Financial planning assistance
-* Smart money management advice
-
 ### AI Integration
 
 * OpenRouter API
 * Large Language Models (LLMs)
 * Context-aware conversations
-
----
-
-## 🧠 AI Memory System
-
-Spendly's AI assistant remembers previous context to provide more meaningful and personalized interactions.
-
-### Benefits
-
-* Context-aware responses
-* Personalized recommendations
-* Better user experience
-* Smarter financial assistance
-* Continuous financial guidance
-
----
-
-## 💡 Smart Financial Insights
-
-Automatically generated insights based on user financial activity.
-
-### Examples
-
-* Spending pattern detection
-* Budget risk warnings
-* Saving opportunities
-* Financial health observations
-* Expense optimization suggestions
 
 ---
 
@@ -207,71 +363,6 @@ Never miss an important payment.
 
 ---
 
-# ⚡ Quick Add Transactions
-
-Designed for speed and convenience.
-
-### Features
-
-* Fast expense entry
-* One-click transaction addition
-* Improved user productivity
-* Simplified financial tracking
-
----
-
-# 🌍 Multi-Language Support
-
-Spendly supports multiple languages to improve accessibility and usability.
-
-### Benefits
-
-* Better user experience
-* Regional accessibility
-* Inclusive design
-* Wider user reach
-
----
-
-# 🎨 Themes & Personalization
-
-Customize the application according to personal preferences.
-
-### Features
-
-* Light Theme
-* Dark Theme
-* Personalized experience
-* User-friendly interface
-
----
-
-# 📱 Responsive Design
-
-Optimized for multiple devices.
-
-### Supported Platforms
-
-* Desktop
-* Laptop
-* Tablet
-* Mobile
-
----
-
-# 🔒 Security & Reliability
-
-Built using modern development practices.
-
-### Features
-
-* Secure Firebase integration
-* Cloud database support
-* Reliable data management
-* Protected user experience
-
----
-
 # ⚙️ Technology Stack
 
 ## Frontend
@@ -310,34 +401,6 @@ Built using modern development practices.
 
 ---
 
-# 🌟 What Makes Spendly Different?
-
-Most finance applications focus only on recording transactions.
-
-Spendly goes beyond simple expense tracking and acts as an intelligent financial companion.
-
-### Traditional Finance Apps
-
-* ❌ Manual tracking only
-* ❌ No intelligent recommendations
-* ❌ Generic user experience
-* ❌ Limited personalization
-* ❌ No financial reasoning
-
-### Spendly
-
-* ✅ AI-powered financial assistance
-* ✅ Personalized financial insights
-* ✅ Context-aware AI conversations
-* ✅ Built-in financial calculators
-* ✅ Goal-oriented financial planning
-* ✅ Multi-language support
-* ✅ Modern UI & UX
-* ✅ Interactive analytics dashboard
-* ✅ Intelligent money management experience
-
----
-
 # 🚀 Future Roadmap
 
 Planned enhancements include:
@@ -369,3 +432,4 @@ Passionate about Software Development, Artificial Intelligence, Agentic AI, Info
 ---
 
 ⭐ If you found this project interesting, consider giving it a star.
+
